@@ -7,16 +7,23 @@ export default function Home() {
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[200px]">
         
         {/* 1. Hero 区域 - 已修复移动端高度 (row-span-2) */}
-        <div className="row-span-2 md:col-span-2 md:row-span-2 rounded-3xl bg-surface border border-highlight p-6 flex flex-col justify-between hover:border-primary/50 transition-colors duration-300">
+        <div className="row-span-2 md:col-span-2 md:row-span-2 rounded-3xl bg-surface border border-highlight p-6 flex flex-col hover:border-primary/50 transition-colors duration-300">
           <div>
             <span className="text-primary font-mono text-sm tracking-wider">FULL STACK DESIGNER</span>
-            <h1 className="text-4xl md:text-5xl font-bold mt-4 leading-normal">
-              Designing with <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Intelligence.</span>
-            </h1>
+            {/* 把 leading-normal 改成 leading-relaxed (这是更宽松的间距) */}
+{/* 技巧：我们把 h1 变成 flex 容器
+   flex-col: 竖着排
+   gap-2: 两行之间强制隔开 8px (你可以改成 gap-4 试试更宽)
+*/}
+<h1 className="text-4xl md:text-5xl font-bold mt-4 flex flex-col gap-4">
+  <span>Designing with</span>
+  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary w-fit pb-2">
+    Intelligence.
+  </span>
+</h1>
           </div>
-          <p className="text-txt-dim max-w-md text-lg">
-            我是 [Yasupo] 连接 UI/UX 与人工智能
+          <p className="text-txt-dim max-w-md text-lg mt-auto pt-4">
+            连接 UI/UX 与人工智能
           </p>
         </div>
 
