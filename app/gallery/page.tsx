@@ -1,5 +1,5 @@
 "use client";
-
+import WorkModal from "@/components/WorkModal"; // 引入刚才写的组件
 import { useState } from "react";
 // 引用刚才建立的数据文件
 import { portfolioItems, categories } from "@/data/portfolio";
@@ -7,6 +7,8 @@ import Link from "next/link";
 
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState("All");
+  // 用来存当前点击了哪个作品，null 表示没点
+const [selectedItem, setSelectedItem] = useState(null);
 
   // 筛选逻辑：如果是 All 就显示全部，否则只显示对应分类
   const filteredItems = activeCategory === "All" 
@@ -45,7 +47,9 @@ export default function GalleryPage() {
       {/* 3. 作品网格展示区 */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
         {filteredItems.map((item) => (
-          <div key={item.id} className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-surface border border-highlight cursor-pointer">
+          <div key={item.id} 
+          onClick={() => setSelectedItem(item)} // 关键：点击时把当前 item 存起来
+          className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-surface border border-highlight cursor-pointer">
             
             {/* 图片区域 - 这里的 img 标签负责显示真图 */}
 <div className="absolute inset-0 bg-gray-900">
@@ -65,6 +69,13 @@ export default function GalleryPage() {
           </div>
         ))}
       </div>
-    </main>
+{/* 如果 selectedItem 有值，就显示弹窗 */}
+  {selectedItem && (
+    <WorkModal 
+      item={selectedItem} 
+      onClose={() => setSelectedItem(null)} 
+    />
+  )}
+</main> // 这是原本的结束标签
   );
 }
