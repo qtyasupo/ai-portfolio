@@ -1,5 +1,5 @@
 import AiRadar from "@/components/AiRadar";
-
+import Link from "next/link";
 export default function Home() {
   return (
     <main className="min-h-screen p-4 md:p-8 flex justify-center text-txt-main custom-scrollbar">
@@ -30,12 +30,20 @@ export default function Home() {
         {/* 2. AI News (引用组件) */}
         <AiRadar />
 
-        {/* 3. 影视作品 Showreel */}
-        <div className="md:col-span-3 md:row-span-2 rounded-3xl bg-surface border border-highlight flex items-center justify-center relative overflow-hidden group cursor-pointer">
+        {/* 3. 影视作品 Showreel (点击跳转到展映页) */}
+        <Link 
+          href="/gallery" 
+          className="md:col-span-3 md:row-span-2 rounded-3xl bg-surface border border-highlight flex items-center justify-center relative overflow-hidden group cursor-pointer block"
+        >
+          {/* A. 渐变遮罩层 */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10"></div>
+          
+          {/* B. 文字标题 */}
           <h2 className="z-20 text-3xl font-bold tracking-widest text-white/20 group-hover:text-white transition-all duration-500">
             SHOWREEL 2025
           </h2>
+          
+          {/* C. 背景视频 */}
           <video 
             autoPlay 
             loop 
@@ -45,7 +53,7 @@ export default function Home() {
           >
             <source src="/demo.mp4" type="video/mp4" />
           </video>
-        </div>
+        </Link>
 
         {/* 4. Tools */}
         <div className="md:col-span-1 md:row-span-1 rounded-3xl bg-surface border border-highlight p-6 flex items-center justify-center hover:bg-highlight/20 transition-colors">
