@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   // 用来存当前点击了哪个作品，null 表示没点
-const [selectedItem, setSelectedItem] = useState(null);
+const [selectedItem, setSelectedItem] = useState<null | typeof portfolioItems[0]>(null);
 
   // 筛选逻辑：如果是 All 就显示全部，否则只显示对应分类
   const filteredItems = activeCategory === "All" 
