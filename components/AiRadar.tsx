@@ -41,7 +41,7 @@ export default function AiRadar() {
   };
 
   return (
-    <div className="row-span-2 md:col-span-1 md:row-span-2 rounded-3xl bg-surface border border-highlight p-6 flex flex-col relative overflow-hidden group">
+    <div className="h-full rounded-3xl bg-surface border border-highlight p-6 flex flex-col relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-20 h-20 bg-primary/20 blur-[50px] rounded-full"></div>
       
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2">

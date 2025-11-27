@@ -1,5 +1,5 @@
 "use client";
-
+import FadeIn from "@/components/FadeIn";
 import { useState } from "react";
 import Link from "next/link";
 import AiRadar from "@/components/AiRadar";
@@ -20,9 +20,13 @@ export default function Home() {
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[200px]">
         
         {/* 1. Hero 区域 */}
-        <div className="row-span-2 md:col-span-2 md:row-span-2 rounded-3xl bg-surface border border-highlight p-6 flex flex-col justify-between hover:border-primary/50 transition-colors duration-300">
+        <FadeIn className="row-span-2 md:col-span-2 md:row-span-2 rounded-3xl bg-surface border border-highlight p-6 flex flex-col justify-between hover:border-primary/50 transition-colors duration-300">
           <div>
-            <span className="text-primary font-mono text-sm tracking-wider">FULL STACK</span>
+            {/* 插入 Logo */}
+  <div className="w-12 h-12 mb-4 rounded-xl overflow-hidden">
+    <img src="/icon.png" alt="Logo" className="w-full h-full object-cover" />
+  </div>
+            
             <h1 className="text-4xl md:text-5xl font-bold mt-4 flex flex-col gap-2">
               <span>Designing with</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary w-fit pb-2">
@@ -33,54 +37,71 @@ export default function Home() {
           <p className="text-txt-dim max-w-md text-lg mt-auto pt-4">
             连接 UI/UX 与人工智能。
           </p>
-        </div>
+        </FadeIn>
 
         {/* 2. AI News */}
-        <AiRadar />
+<FadeIn 
+  delay={0.1} 
+  className="md:col-span-1 md:row-span-2 h-full" // 关键是加了 h-full
+>
+   <AiRadar />
+</FadeIn>
 
-        {/* 3. Showreel */}
-        <Link 
-          href="/gallery" 
-          className="md:col-span-3 md:row-span-2 rounded-3xl bg-surface border border-highlight flex items-center justify-center relative overflow-hidden group cursor-pointer block"
+       {/* 3. Showreel */}
+        <FadeIn 
+          delay={0.2} 
+          className="md:col-span-3 md:row-span-2" // 1. Grid 布局属性给外层动画盒子
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10"></div>
-          <h2 className="z-20 text-3xl font-bold tracking-widest text-white/20 group-hover:text-white transition-all duration-500">
-            SHOWREEL 2025
-          </h2>
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+          <Link 
+            href="/gallery" 
+            // 2. 样式属性给内层链接 (w-full h-full 保证填满动画盒子)
+            className="w-full h-full rounded-3xl bg-surface border border-highlight flex items-center justify-center relative overflow-hidden group cursor-pointer block"
           >
-            <source src="/demo.mp4" type="video/mp4" />
-          </video>
-        </Link>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10"></div>
+            <h2 className="z-20 text-3xl font-bold tracking-widest text-white/20 group-hover:text-white transition-all duration-500">
+              SHOWREEL 2025
+            </h2>
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+            >
+              <source src="/demo.mp4" type="video/mp4" />
+            </video>
+          </Link>
+        </FadeIn>
 
         {/* 4. Tools */}
-        <Link 
-          href="/tools"
-          className="md:col-span-1 md:row-span-1 rounded-3xl bg-surface border border-highlight p-6 flex items-center justify-center hover:bg-highlight/20 transition-colors cursor-pointer"
-        >
-           <span className="font-mono text-xl">🛠️ Tools</span>
-        </Link>
+        <FadeIn delay={0.3} className="md:col-span-1 md:row-span-1">
+          <Link 
+            href="/tools"
+            className="w-full h-full rounded-3xl bg-surface border border-highlight p-6 flex items-center justify-center hover:bg-highlight/20 transition-colors cursor-pointer"
+          >
+             <span className="font-mono text-xl">🛠️ Tools</span>
+          </Link>
+        </FadeIn>
 
-        {/* 5. Contact (点击弹出) */}
-        <div 
-          onClick={() => setShowContact(true)}
-          className="md:col-span-1 md:row-span-1 rounded-3xl bg-primary text-white p-6 flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer"
-        >
-           <span className="font-bold text-xl">Let's Talk &rarr;</span>
-        </div>
+        {/* 5. Contact */}
+        <FadeIn delay={0.4} className="md:col-span-1 md:row-span-1">
+          <div 
+            onClick={() => setShowContact(true)}
+            className="w-full h-full rounded-3xl bg-primary text-white p-6 flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer"
+          >
+             <span className="font-bold text-xl">Let's Talk &rarr;</span>
+          </div>
+        </FadeIn>
 
         {/* 6. Lab */}
-        <Link 
-           href="/lab"
-           className="md:col-span-1 md:row-span-1 rounded-3xl bg-surface border border-highlight p-6 flex items-center justify-center hover:bg-highlight/20 transition-colors"
-        >
-           <span className="font-mono text-xl">🧪 Lab</span>
-        </Link>
+        <FadeIn delay={0.5} className="md:col-span-1 md:row-span-1">
+          <Link 
+             href="/lab"
+             className="w-full h-full rounded-3xl bg-surface border border-highlight p-6 flex items-center justify-center hover:bg-highlight/20 transition-colors"
+          >
+             <span className="font-mono text-xl">🧪 Lab</span>
+          </Link>
+        </FadeIn>
 
       </div>
 
