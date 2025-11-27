@@ -1,5 +1,5 @@
 "use client";
-
+import NewsModal from "./NewsModal";
 import { useState } from "react";
 
 export default function AiRadar() {
@@ -13,6 +13,8 @@ export default function AiRadar() {
 
   // 2. 定义加载状态
   const [isLoading, setIsLoading] = useState(false);
+  // 增加一个状态，用来存“当前点开了哪条新闻”
+const [selectedNews, setSelectedNews] = useState<null | typeof news[0]>(null);
 
   // 3. 处理点击事件 (连接真实后端)
   const handleSummarize = async () => {
@@ -52,13 +54,23 @@ export default function AiRadar() {
       <div className="space-y-4 text-sm text-txt-dim overflow-y-auto flex-1 pr-2 custom-scrollbar">
         {news.map((item) => (
           <div 
-            key={item.id} 
-            className="p-3 bg-background rounded-xl border border-highlight/50 hover:border-primary transition-colors cursor-pointer"
-          >
+  key={item.id} 
+  onClick={() => setSelectedNews(item)} // 点击时记录当前新闻
+  className="p-3 bg-background rounded-xl border border-highlight/50 hover:border-primary hover:bg-highlight/10 transition-all cursor-pointer group"
+>
             <span className="text-xs text-primary font-mono">{item.date}</span>
-            <p className="mt-1 text-txt-main truncate">{item.title}</p>
+            <div className="flex justify-between items-start gap-2">
+  <p className="mt-1 text-txt-main line-clamp-2">{item.title}</p>
+  <span className="mt-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+</div>
           </div>
-        ))}
+        ))}{/* 弹窗逻辑：如果有选中的新闻，就显示弹窗 */}
+  {selectedNews && (
+    <NewsModal 
+      news={selectedNews} 
+      onClose={() => setSelectedNews(null)} 
+    />
+  )}
       </div>
       
       <div className="mt-4 pt-4 border-t border-highlight/50">
