@@ -55,10 +55,13 @@ export default function Home() {
           </video>
         </Link>
 
-        {/* 4. Tools */}
-        <div className="md:col-span-1 md:row-span-1 rounded-3xl bg-surface border border-highlight p-6 flex items-center justify-center hover:bg-highlight/20 transition-colors">
+        {/* 4. Tools (点击跳转到工具页) */}
+        <Link 
+          href="/tools"
+          className="md:col-span-1 md:row-span-1 rounded-3xl bg-surface border border-highlight p-6 flex items-center justify-center hover:bg-highlight/20 transition-colors cursor-pointer"
+        >
            <span className="font-mono text-xl">🛠️ Tools</span>
-        </div>
+        </Link>
 
         {/* 5. Contact */}
         <div className="md:col-span-1 md:row-span-1 rounded-3xl bg-primary text-white p-6 flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer">
