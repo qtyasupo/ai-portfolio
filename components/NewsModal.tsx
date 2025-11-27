@@ -7,6 +7,8 @@ interface NewsModalProps {
     id: number;
     date: string;
     title: string;
+    insight?: string; // 问号表示可选，防止旧数据报错
+    link?: string;
   };
   onClose: () => void;
 }
@@ -58,8 +60,9 @@ export default function NewsModal({ news, onClose }: NewsModalProps) {
             <span>✨</span> GEMINI INSIGHT
           </div>
           <p className="text-sm text-txt-dim leading-relaxed">
-            该事件标志着生成式 AI 领域的又一次重大突破。技术专家认为，这将显著改变现有的工作流，尤其是在创意产业与自动化领域。建议关注后续的 API 开放计划及商业化落地场景。
-          </p>
+  {/* 如果有 insight 就显示，没有就显示默认占位符 */}
+  {news.insight || "AI 正在分析该新闻的影响力..."}
+</p>
         </div>
 
         {/* 底部按钮 */}
@@ -71,10 +74,11 @@ export default function NewsModal({ news, onClose }: NewsModalProps) {
             Got it
           </button>
           <a 
-            href="https://openai.com/news" // 这里可以放一个通用的科技新闻链接
-            target="_blank"
-            className="px-4 py-2 rounded-lg border border-highlight text-txt-dim text-sm hover:text-white hover:border-primary transition-all"
-          >
+            href={news.link || "#"} // 动态链接
+  target="_blank"
+  rel="noopener noreferrer" // 安全属性，防止新窗口的安全隐患
+  className="px-4 py-2 rounded-lg border border-highlight text-txt-dim text-sm hover:text-white hover:border-primary transition-all"
+>
             Read Source ↗
           </a>
         </div>

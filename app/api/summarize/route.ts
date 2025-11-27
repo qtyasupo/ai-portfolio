@@ -19,18 +19,20 @@ export async function POST() {
     const genAI = new GoogleGenerativeAI(apiKey);
     // 使用截图里显示的最新版 ID
 const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-    // 3. 准备提示词 (Prompt)
-    // 我们要求它必须返回 JSON 格式，不要废话
+    // 3. 准备提示词 (Prompt) - 升级版
     const prompt = `
       你是一个科技新闻编辑。
-      请生成 4 条简短的、关于 2025 年人工智能发展的未来新闻标题。
+      请联网搜索实时新闻并生成 4 条关于目前最新人工智能发展的新闻。
       
-      格式要求：
-      1. 必须是纯 JSON 数组格式。
-      2. 数组里包含对象，字段为: id (数字), date (例如 'TODAY', '2 DAYS AGO'), title (中文).
-      3. 不要包含 Markdown 标记（不要写 \`\`\`json），直接返回数组字符串。
+      格式要求：纯 JSON 数组，不包含 Markdown。
+      数组对象字段: 
+      - id (数字)
+      - date (例如 'TODAY', '2 DAYS AGO')
+      - title (新闻标题，中文)
+      - insight (一段简短的深度解读，50字左右，分析对行业的影响，中文)
+      - link (生成一个 Google 搜索链接，格式为 'https://www.google.com/search?q=' 加上新闻标题)
       
-      例如：[{"id":1, "date":"TODAY", "title":"..."}]
+      例如：[{"id":1, "date":"TODAY", "title":"...", "insight":"...", "link":"..."}]
     `;
 
     // 4. 发送请求
