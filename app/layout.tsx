@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -31,6 +32,8 @@ export default function RootLayout({
           {/* 重点在这里：用 LanguageProvider 包裹住 children */}
           <LanguageProvider>
             {children}
+            {/* 这里的 Analytics 组件负责收集数据 */}
+        <Analytics />
           </LanguageProvider>
           
         </body>
