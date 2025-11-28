@@ -93,25 +93,25 @@ export default function KnowledgePage() {
           <div className="space-y-6 text-gray-300 leading-relaxed text-lg font-light">
             {activeDoc.content.map((block, index) => {
               // 渲染文字
-              if (block.type === 'text') return <p key={index}>{block.value}</p>;
+              if (block.type === 'text') return <p key={index}>{block.value as string}</p>;
               
               // 渲染图片
               if (block.type === 'image') return (
                 <div key={index} className="rounded-xl overflow-hidden border border-[#2f2f2f] my-6 shadow-2xl">
-                  <img src={block.value} alt="content" className="w-full h-auto opacity-90 hover:opacity-100 transition-opacity" />
+                  <img src={block.value as string} alt="content" className="w-full h-auto opacity-90 hover:opacity-100 transition-opacity" />
                 </div>
               );
               
               // 渲染引用 (Quote)
               if (block.type === 'quote') return (
                 <div key={index} className="border-l-4 border-white pl-6 py-2 my-8 text-xl text-white italic font-serif">
-                  "{block.value}"
+                  "{block.value as string}"
                 </div>
               );
               
               // 渲染链接
               if (block.type === 'link') return (
-                <a key={index} href={block.value} target="_blank" className="flex items-center gap-2 text-blue-400 hover:underline p-4 rounded bg-[#2f2f2f]/50 border border-[#2f2f2f] hover:border-blue-500/50 transition-colors">
+                <a key={index} href={block.value as string} target="_blank" className="flex items-center gap-2 text-blue-400 hover:underline p-4 rounded bg-[#2f2f2f]/50 border border-[#2f2f2f] hover:border-blue-500/50 transition-colors">
                   🔗 <span className="truncate">{block.value}</span>
                 </a>
               );
