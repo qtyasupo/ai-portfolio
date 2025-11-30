@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-color: #0A0A0A; /* 必须是这一行 */
+  color: #EDEDED;
+}/* --- 自定义滚动条样式 START --- */
+@layer utilities {
+  /* 定义一个叫 .custom-scrollbar 的工具类 */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px; /* 宽度只有 6px，非常细 */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent; /* 轨道透明，不显眼 */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #3f3f46; /* 默认深灰色 */
+    border-radius: 10px; /* 圆角 */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #7C3AED; /* 鼠标放上去变成我们的品牌紫！ */
+  }
+}
+/* --- 自定义滚动条样式 END --- */
