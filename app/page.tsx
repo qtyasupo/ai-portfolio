@@ -1,5 +1,5 @@
 "use client";
-
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { useState } from "react";
 import Link from "next/link";
 import AiRadar from "@/components/AiRadar";
@@ -20,8 +20,10 @@ export default function Home() {
   return (
     <main className="min-h-screen p-4 md:p-8 flex justify-center text-txt-main custom-scrollbar relative">
       
-      {/* --- 语言切换浮窗 (右上角) --- */}
-      <div className="absolute top-4 right-4 z-50">
+{/* --- 顶部功能区 (语言切换 + 用户登录) --- */}
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-3">
+        
+        {/* 1. 语言切换按钮 */}
         <button 
           onClick={toggleLanguage}
           className="px-4 py-2 rounded-full bg-surface border border-highlight text-xs font-mono hover:border-primary transition-all flex items-center gap-2 backdrop-blur-md"
@@ -31,6 +33,29 @@ export default function Home() {
           <span className="text-txt-dim">/</span>
           <span className={locale === 'zh' ? 'text-white' : 'text-txt-dim'}>中</span>
         </button>
+
+        {/* 2. Clerk 登录区域 (检查这一段有没有！) */}
+        <div className="flex items-center">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="px-4 py-2 rounded-full bg-primary text-white text-xs font-bold hover:bg-secondary transition-colors shadow-lg cursor-pointer">
+                Log In
+              </button>
+            </SignInButton>
+          </SignedOut>
+
+          <SignedIn>
+            <UserButton 
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: "w-9 h-9 border-2 border-primary"
+                }
+              }}
+            />
+          </SignedIn>
+        </div>
+
       </div>
 
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[200px] mt-12 md:mt-0">

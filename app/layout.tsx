@@ -1,21 +1,17 @@
-import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google"; // 假设你用了这两个字体，如果没有就保留你原有的
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { Analytics } from "@vercel/analytics/react";
+// 1. 引入 Clerk 提供者
+import { ClerkProvider } from '@clerk/nextjs'
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
-  title: "Yasupo | AI Creative Hub", // 浏览器标签页显示的标题
-  description: "UI/UX Designer & AI Developer Portfolio", // 分享给别人时显示的简介
+  title: "Yasupo | AI Creative Hub",
+  description: "UI/UX Designer & AI Developer Portfolio",
 };
 
 export default function RootLayout({
@@ -24,19 +20,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // 2. 关键点：ClerkProvider 必须包在最最外面（包住 html）
+    <ClerkProvider>
       <html lang="en">
-        {/* 注意：body 标签上的 className 保持你原本的样子不要动 */}
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {/* 重点在这里：用 LanguageProvider 包裹住 children */}
+        <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
           <LanguageProvider>
             {children}
-            {/* 这里的 Analytics 组件负责收集数据 */}
-        <Analytics />
+            <Analytics />
           </LanguageProvider>
-          
         </body>
       </html>
-    );
+    </ClerkProvider>
+  );
 }
