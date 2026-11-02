@@ -2,9 +2,11 @@
 
 将 ai-portfolio 重写为 AI 创作情报站。目标域名 **www.yasupo-hub.cn**，Vercel 项目 **ai-portfolio**。旧站基线 `00102433f83e70ea3f4fea701ee39eb364f7b95f`；开发分支 `rewrite/creator-radar`。参考 AIHOT 工作流独立实现，未使用其品牌或产品代码。
 
+**其他设备 / 其他 Agent 接手：先看 [HANDOFF.md](HANDOFF.md)。** 新版位于 `rewrite/creator-radar` 分支，直接克隆默认 `main` 会得到旧站。可复制的交接提示词见 [AGENT_START.md](AGENT_START.md)。
+
 ## 本机运行
 
-需要 Node.js 24.11+、Python 3.12+。本机已安装 Agent-Reach，无需重装。
+需要 Node.js 24.11+、Python 3.12+。原开发机已安装 Agent-Reach；其他设备应先检查自己的环境，不能沿用原机“已安装、已登录”的结论。
 
 ```powershell
 Set-Location 'C:\Users\lenovo\Documents\New project\ai-creator-radar'
