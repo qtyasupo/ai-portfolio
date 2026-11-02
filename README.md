@@ -31,6 +31,17 @@ npm run snapshot
 
 YouTube/X/小红书使用现有 Agent-Reach。抖音用已安装 OpenCLI 的 `douyin search` DOM 读取，在现有采集专用浏览器中运行；Agent-Reach原版没有抖音渠道。不下载媒体，不导出 Cookie，不调用自写签名接口。
 
+抖音与小红书已于2026-11-02实际登录验收。中文平台检索后会用同一个专用会话补读公开页面：抖音只认视频自身“发布时间”标签，小红书只认笔记自身日期区域，排除评论区日期。完整年份或页面显示的相对时间可核验；编辑时间、缺少年份等情况保持待核验。相对时间按观察时刻换算并保留页面原始显示证据，精度标记为minute或day，不猜测笔记ID时间。
+
+```powershell
+# 用户确认完成登录/验证后恢复，随后执行真实采集验收
+node --env-file-if-exists=.env.local --import tsx scripts/resume-sources.ts douyin xiaohongshu
+# 补读最近一次中文平台检索结果，不重复搜索
+python -X utf8 scripts/collect.py --platform douyin --platform xiaohongshu --enrich-existing --limit 3
+# 查看各平台成功、公开、待核验与排除数量
+node --env-file-if-exists=.env.local --import tsx scripts/platform-status.ts
+```
+
 遇到 NEED_LOGIN、PLATFORM_BLOCKED、RATE_LIMITED 会持久暂停该渠道。用户处理官方页面后，在工作台编辑平台，点击“我已处理，恢复采集”。BUSY/超时本轮不重试。使用OS锁防止同时采集。
 
 ## 导入格式
@@ -68,6 +79,7 @@ YouTube/X/小红书使用现有 Agent-Reach。抖音用已安装 OpenCLI 的 `do
 
 ```powershell
 npm test
+python -X utf8 -m unittest discover -s tests -p 'test_*.py'
 npm run typecheck
 npm run build
 node scripts/check-http.mjs

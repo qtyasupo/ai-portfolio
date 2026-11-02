@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-02T07:21:07.512Z",
+  "updatedAt": "2026-11-02T08:04:19.249Z",
   "items": [
     {
       "id": "633b1955ccbda59d1cf9",
@@ -260,9 +260,633 @@
           "evidence": "same prompt: \"make an animation of a pelican riding a bicycle\"\n\n4 AIs. nobody asked for a sunset.\n\nclaude opus 5.5 · gpt-6.1 terra · gemini 4 argon · claude fab"
         }
       ]
+    },
+    {
+      "id": "10d0ebeaeb9d901ecc57",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/watch?v=Ge1B-Ok1Pfk",
+      "title": "Claude Makes a New Kind of Video - Full Tutorial",
+      "author": "Futurepedia",
+      "text": "*Free: 86 prompts to build Animated Explainer Videos with Claude* https://clickhubspot.com/jpok\n\nMore from Futurepedia:\n👉 Get your free AI plan on Futurepedia 2.0: clickhubspot.com/691m\n\nSummary:\nThere’s a new way to make videos with Claude and they’re perfect for motion graphics, explainer videos, and videos that don’t look like they were made with AI. Claude doesn’t have a video generator but i",
+      "publishedAt": "2026-10-19T00:00:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "day",
+      "firstSeenAt": "2026-11-02T07:48:50.875Z",
+      "lastSeenAt": "2026-11-02T07:48:50.875Z",
+      "metrics": {
+        "likes": 5959,
+        "views": 416031
+      },
+      "query": "Claude code animation",
+      "evidence": "Claude Makes a New Kind of Video - Full Tutorial",
+      "access": "detail",
+      "publisherId": "youtube:futurepedia",
+      "category": "Claude 动画",
+      "tags": [
+        "Claude"
+      ],
+      "summary": "*Free: 86 prompts to build Animated Explainer Videos with Claude* https://clickhubspot.com/jpok\n\nMore from Futurepedia:\n👉 Get your free AI plan on Futurepedia 2.0: clickhubspot.co",
+      "score": 90,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:claudemakesanewkindofvideofulltutorial",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:48:50.875Z",
+          "metrics": {
+            "likes": 5959,
+            "views": 416031
+          },
+          "access": "detail",
+          "evidence": "Claude Makes a New Kind of Video - Full Tutorial"
+        }
+      ]
+    },
+    {
+      "id": "5e23a32c181560c161b8",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/watch?v=v1Gwa1KyUaI",
+      "title": "Claude FINALLY Unlocked AI Motion Graphics",
+      "author": "Zinho Automates",
+      "text": "Claude FINALLY Unlocked AI Motion Graphics. Join our FREE community with the prompts & setup guide: https://www.skool.com/ai-launchpad/about\n\nChapters\n00:00 - Intro\n01:24 - Idea to explainer\n03:03 - Make your numbers move\n04:10 - Social and Launch clips\n05:01 - Edit those graphics\n05:39 - Blog post to video\n07:08 - Specificity trick\n08:59 - Dashboards\n10:26 - Extra launch\n10:44 - Outro\n\nFor busine",
+      "publishedAt": "2026-10-13T00:00:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "day",
+      "firstSeenAt": "2026-11-02T07:48:50.875Z",
+      "lastSeenAt": "2026-11-02T07:48:50.875Z",
+      "metrics": {
+        "views": 109512
+      },
+      "query": "Claude code animation",
+      "evidence": "Claude FINALLY Unlocked AI Motion Graphics",
+      "access": "detail",
+      "publisherId": "youtube:zinho automates",
+      "category": "Claude 动画",
+      "tags": [
+        "Claude"
+      ],
+      "summary": "Claude FINALLY Unlocked AI Motion Graphics. Join our FREE community with the prompts & setup guide: https://www.skool.com/ai-launchpad/about\n\nChapters\n00:00 - Intro\n01:24 - Idea to",
+      "score": 90,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:claudefinallyunlockedaimotiongraphics",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:48:50.875Z",
+          "metrics": {
+            "views": 109512
+          },
+          "access": "detail",
+          "evidence": "Claude FINALLY Unlocked AI Motion Graphics"
+        }
+      ]
+    },
+    {
+      "id": "b3ffc4c9f6aab23d479a",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/watch?v=OtbLL6OBNE4",
+      "title": "How to Make Viral Animated Shorts Using Claude (Full Workflow)",
+      "author": "Mr omi",
+      "text": "How to make viral animated shorts with Claude, step by step. I gave Claude a channel's latest 20 shorts, it studied them frame by frame at 30 fps, and then it built a full animated short with our own story: 2D characters in a colourful 3D world, made with three.js on my own PC. No AI video generator.\n\nIn this video:\n• Claude watches 20 shorts at 30 fps and writes a style bible\n• The script formula",
+      "publishedAt": "2026-11-01T00:00:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "day",
+      "firstSeenAt": "2026-11-02T07:48:50.875Z",
+      "lastSeenAt": "2026-11-02T07:48:50.875Z",
+      "metrics": {
+        "likes": 4008,
+        "views": 107601
+      },
+      "query": "Claude code animation",
+      "evidence": "How to Make Viral Animated Shorts Using Claude (Full Workflow)",
+      "access": "detail",
+      "publisherId": "youtube:mr omi",
+      "category": "Claude 动画",
+      "tags": [
+        "Claude",
+        "代码动画"
+      ],
+      "summary": "How to make viral animated shorts with Claude, step by step. I gave Claude a channel's latest 20 shorts, it studied them frame by frame at 30 fps, and then it built a full animated",
+      "score": 90,
+      "scoreMode": "rules",
+      "status": "selected",
+      "eventKey": "title:howtomakeviralanimatedshortsusingclaudefullworkflow",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:48:50.875Z",
+          "metrics": {
+            "likes": 4008,
+            "views": 107601
+          },
+          "access": "detail",
+          "evidence": "How to Make Viral Animated Shorts Using Claude (Full Workflow)"
+        }
+      ]
+    },
+    {
+      "id": "3708afb01ee419697b7e",
+      "platform": "douyin",
+      "url": "https://www.douyin.com/video/7703023641964907827",
+      "title": "第1-5集纯享合集版： 合集版为了剧情连贯性，删减了每集的彩蛋部分，新来的彦祖亦菲们感兴趣可以去单集看哦~全片由@即梦AI短剧工作室制作 \n#即梦AI创作者成长计划 #即梦未来荧幕剧集片单 #我的姐姐有点危险 #AI创作浪潮计划 #未来导演扶持计划",
+      "author": "景行",
+      "text": "第1-5集纯享合集版： 合集版为了剧情连贯性，删减了每集的彩蛋部分，新来的彦祖亦菲们感兴趣可以去单集看哦~全片由@即梦AI短剧工作室制作 \n#即梦AI创作者成长计划 #即梦未来荧幕剧集片单 #我的姐姐有点危险 #AI创作浪潮计划 #未来导演扶持计划",
+      "publishedAt": "2026-11-01T02:48:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "minute",
+      "firstSeenAt": "2026-11-02T07:51:30.105Z",
+      "lastSeenAt": "2026-11-02T08:00:36.556Z",
+      "metrics": {
+        "likes": 98000
+      },
+      "query": "AI 短剧",
+      "evidence": "第1-5集纯享合集版： 合集版为了剧情连贯性，删减了每集的彩蛋部分，新来的彦祖亦菲们感兴趣可以去单集看哦~全片由@即梦AI短剧工作室制作 \n#即梦AI创作者成长计划 #即梦未来荧幕剧集片单 #我的姐姐有点危险 #AI创作浪潮计划 #未来导演扶持计划；页面发布时间：发布时间：2026-11-01 10:48",
+      "access": "detail",
+      "publisherId": "douyin:景行",
+      "category": "AI 短剧",
+      "tags": [
+        "Seedance",
+        "AI 短剧"
+      ],
+      "summary": "第1-5集纯享合集版： 合集版为了剧情连贯性，删减了每集的彩蛋部分，新来的彦祖亦菲们感兴趣可以去单集看哦~全片由@即梦AI短剧工作室制作 \n#即梦AI创作者成长计划 #即梦未来荧幕剧集片单 #我的姐姐有点危险 #AI创作浪潮计划 #未来导演扶持计划",
+      "score": 65,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:第15集纯享合集版合集版为了剧情连贯性删减了每集的彩蛋部分新来的彦祖亦菲们感兴趣可以去单集看哦全片由",
+      "backfill": true,
+      "observations": [
+        {
+          "at": "2026-11-02T07:51:30.105Z",
+          "metrics": {
+            "likes": 98000
+          },
+          "access": "search",
+          "evidence": "第1-5集纯享合集版： 合集版为了剧情连贯性，删减了每集的彩蛋部分，新来的彦祖亦菲们感兴趣可以去单集看哦~全片由@即梦AI短剧工作室制作 \n#即梦AI创作者成长计划 #即梦未来荧幕剧集片单 #我的姐姐有点危险 #AI创作浪潮计划 #未来导演扶持计划"
+        },
+        {
+          "at": "2026-11-02T08:00:36.556Z",
+          "metrics": {
+            "likes": 98000
+          },
+          "access": "detail",
+          "evidence": "第1-5集纯享合集版： 合集版为了剧情连贯性，删减了每集的彩蛋部分，新来的彦祖亦菲们感兴趣可以去单集看哦~全片由@即梦AI短剧工作室制作 \n#即梦AI创作者成长计划 #即梦未来荧幕剧集片单 #我的姐姐有点危险 #AI创作浪潮计划 #未来导演扶持计划；页面发布时间：发布时间：2026-11-01 10:48"
+        }
+      ]
+    },
+    {
+      "id": "8d3413044f64d0f7824a",
+      "platform": "douyin",
+      "url": "https://www.douyin.com/video/7702455540751813915",
+      "title": "没有名分的醋 好酸…… #OiiOii#OiiOii创作者计划#伪骨科#ai短剧#我哥不是亲哥本视频由OiiOii制作",
+      "author": "梦梦博物馆",
+      "text": "没有名分的醋 好酸…… #OiiOii#OiiOii创作者计划#伪骨科#ai短剧#我哥不是亲哥本视频由OiiOii制作",
+      "publishedAt": "2026-10-30T13:41:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "minute",
+      "firstSeenAt": "2026-11-02T07:51:30.105Z",
+      "lastSeenAt": "2026-11-02T08:00:36.556Z",
+      "metrics": {
+        "likes": 206000
+      },
+      "query": "AI 短剧",
+      "evidence": "没有名分的醋 好酸…… #OiiOii#OiiOii创作者计划#伪骨科#ai短剧#我哥不是亲哥本视频由OiiOii制作；页面发布时间：发布时间：2026-10-30 21:41",
+      "access": "detail",
+      "publisherId": "douyin:梦梦博物馆",
+      "category": "AI 短剧",
+      "tags": [
+        "AI 短剧"
+      ],
+      "summary": "没有名分的醋 好酸…… #OiiOii#OiiOii创作者计划#伪骨科#ai短剧#我哥不是亲哥本视频由OiiOii制作",
+      "score": 50,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:没有名分的醋好酸",
+      "backfill": true,
+      "observations": [
+        {
+          "at": "2026-11-02T07:51:30.105Z",
+          "metrics": {
+            "likes": 206000
+          },
+          "access": "search",
+          "evidence": "没有名分的醋 好酸…… #OiiOii#OiiOii创作者计划#伪骨科#ai短剧#我哥不是亲哥本视频由OiiOii制作"
+        },
+        {
+          "at": "2026-11-02T08:00:36.556Z",
+          "metrics": {
+            "likes": 206000
+          },
+          "access": "detail",
+          "evidence": "没有名分的醋 好酸…… #OiiOii#OiiOii创作者计划#伪骨科#ai短剧#我哥不是亲哥本视频由OiiOii制作；页面发布时间：发布时间：2026-10-30 21:41"
+        }
+      ]
+    },
+    {
+      "id": "472ffefcf3ba1136882b",
+      "platform": "douyin",
+      "url": "https://www.douyin.com/video/7703072449981631753",
+      "title": "《大帅：能打外星人》工学博士，魂穿大帅手搓喀秋莎。 #即梦AI创作者成长计划#ai漫剧#原创短剧",
+      "author": "疯猫AIGC",
+      "text": "《大帅：能打外星人》工学博士，魂穿大帅手搓喀秋莎。 #即梦AI创作者成长计划#ai漫剧#原创短剧",
+      "publishedAt": "2026-11-01T05:35:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "minute",
+      "firstSeenAt": "2026-11-02T07:51:30.105Z",
+      "lastSeenAt": "2026-11-02T08:00:36.556Z",
+      "metrics": {
+        "likes": 640000
+      },
+      "query": "AI 短剧",
+      "evidence": "《大帅：能打外星人》工学博士，魂穿大帅手搓喀秋莎。 #即梦AI创作者成长计划#ai漫剧#原创短剧；页面发布时间：发布时间：2026-11-01 13:35",
+      "access": "detail",
+      "publisherId": "douyin:疯猫aigc",
+      "category": "AI 短剧",
+      "tags": [
+        "Seedance",
+        "AI 短剧"
+      ],
+      "summary": "《大帅：能打外星人》工学博士，魂穿大帅手搓喀秋莎。 #即梦AI创作者成长计划#ai漫剧#原创短剧",
+      "score": 50,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:大帅能打外星人工学博士魂穿大帅手搓喀秋莎",
+      "backfill": true,
+      "observations": [
+        {
+          "at": "2026-11-02T07:51:30.105Z",
+          "metrics": {
+            "likes": 640000
+          },
+          "access": "search",
+          "evidence": "《大帅：能打外星人》工学博士，魂穿大帅手搓喀秋莎。 #即梦AI创作者成长计划#ai漫剧#原创短剧"
+        },
+        {
+          "at": "2026-11-02T08:00:36.556Z",
+          "metrics": {
+            "likes": 640000
+          },
+          "access": "detail",
+          "evidence": "《大帅：能打外星人》工学博士，魂穿大帅手搓喀秋莎。 #即梦AI创作者成长计划#ai漫剧#原创短剧；页面发布时间：发布时间：2026-11-01 13:35"
+        }
+      ]
+    },
+    {
+      "id": "f9d4f5eb4cda988c0b9e",
+      "platform": "xiaohongshu",
+      "url": "https://www.xiaohongshu.com/explore/6ae83c6a000000001a0232d4",
+      "title": "AI短剧制作",
+      "author": "长江大学 电子信息与电气工程 考研辅导",
+      "text": "专门做 AI 短剧辅导 帮你搭建整套制作流程，教你写抓人短剧脚本，调教画面，优化配音字幕，打造属于你的 AI 短剧账号。 慢慢把爱好变成可以变现的路子。 #AI短剧制作教程 #做短剧 #AI视频创业 #线上副业",
+      "publishedAt": "2026-11-02T07:32:55.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "minute",
+      "firstSeenAt": "2026-11-02T07:51:35.559Z",
+      "lastSeenAt": "2026-11-02T08:01:14.809Z",
+      "metrics": {
+        "comments": 1
+      },
+      "query": "AI 短剧",
+      "evidence": "AI短剧制作；页面发布时间：28分钟前 安徽",
+      "access": "detail",
+      "publisherId": "xiaohongshu:长江大学 电子信息与电气工程 考研辅导",
+      "category": "AI 短剧",
+      "tags": [
+        "AI 短剧"
+      ],
+      "summary": "专门做 AI 短剧辅导 帮你搭建整套制作流程，教你写抓人短剧脚本，调教画面，优化配音字幕，打造属于你的 AI 短剧账号。 慢慢把爱好变成可以变现的路子。 #AI短剧制作教程 #做短剧 #AI视频创业 #线上副业",
+      "score": 80,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:ai短剧制作",
+      "backfill": true,
+      "observations": [
+        {
+          "at": "2026-11-02T07:51:35.559Z",
+          "metrics": {},
+          "access": "search",
+          "evidence": "AI短剧制作"
+        },
+        {
+          "at": "2026-11-02T08:01:14.809Z",
+          "metrics": {
+            "comments": 1
+          },
+          "access": "detail",
+          "evidence": "AI短剧制作；页面发布时间：28分钟前 安徽"
+        }
+      ]
+    },
+    {
+      "id": "86b38c6086d06fbcbf7a",
+      "platform": "x",
+      "url": "https://x.com/i/status/2116745295111262605",
+      "title": "卧槽，GitHub 上这个开源项目，\n直接把「小说变短剧」做成了一条流水线。\n\nGitHub 上有个开源项目 ArcReel，专门治这个。\n丢进去一篇小说，它从角色、分镜一路做到成片。\n\n怎么用？\n整个流程就 4 步：\n\n1.丢进小说或剧本，AI 先拆内容、排项目\n2.生成角色、场景、道具的参考图，后面每个镜头都拿它们当参考，脸就不会乱飘\n3.自动排分镜、出视频片段、配旁白，最后合成成片\n4.导出剪映草稿，字幕、配音、节奏你自己再调\n\n做 AI 漫剧、小说解说、带货短视频的，",
+      "author": "3three_AI",
+      "text": "卧槽，GitHub 上这个开源项目，\n直接把「小说变短剧」做成了一条流水线。\n\nGitHub 上有个开源项目 ArcReel，专门治这个。\n丢进去一篇小说，它从角色、分镜一路做到成片。\n\n怎么用？\n整个流程就 4 步：\n\n1.丢进小说或剧本，AI 先拆内容、排项目\n2.生成角色、场景、道具的参考图，后面每个镜头都拿它们当参考，脸就不会乱飘\n3.自动排分镜、出视频片段、配旁白，最后合成成片\n4.导出剪映草稿，字幕、配音、节奏你自己再调\n\n做 AI 漫剧、小说解说、带货短视频的，都可以先收藏。\n\n想研究 AI 视频生产流程的，它的开源架构也值得翻一翻。\n\n📌 https://t.co/IxIHpBgpog",
+      "publishedAt": "2026-11-01T04:13:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "second",
+      "firstSeenAt": "2026-11-02T07:51:42.335Z",
+      "lastSeenAt": "2026-11-02T07:51:42.335Z",
+      "metrics": {
+        "likes": 512,
+        "views": 43203
+      },
+      "query": "(AI 短剧) since:2026-11-01 -filter:replies",
+      "evidence": "卧槽，GitHub 上这个开源项目，\n直接把「小说变短剧」做成了一条流水线。\n\nGitHub 上有个开源项目 ArcReel，专门治这个。\n丢进去一篇小说，它从角色、分镜一路做到成片。\n\n怎么用？\n整个流程就 4 步：\n\n1.丢进小说或剧本，AI 先拆内容、排项目\n2.生成角色、场景、道具的参考图，后面每个镜头都拿它们当参考，脸就不会乱飘\n3.自动排分镜、出视频片段、配旁白，最后合成成片\n4.导出剪映草稿，字幕、配音、节奏你自己再调\n\n",
+      "access": "search",
+      "publisherId": "x:3three_ai",
+      "category": "AI 短剧",
+      "tags": [
+        "AI 短剧"
+      ],
+      "summary": "卧槽，GitHub 上这个开源项目，\n直接把「小说变短剧」做成了一条流水线。\n\nGitHub 上有个开源项目 ArcReel，专门治这个。\n丢进去一篇小说，它从角色、分镜一路做到成片。\n\n怎么用？\n整个流程就 4 步：\n\n1.丢进小说或剧本，AI 先拆内容、排项目\n2.生成角色、场景、道具的参考图，后面每个镜头都拿它们当参考，脸就不会乱飘\n3.自动排分镜、出",
+      "score": 90,
+      "scoreMode": "rules",
+      "status": "selected",
+      "eventKey": "title:卧槽github上这个开源项目直接把小说变短剧做成了一条流水线github上有个开源项目arcreel专门治这个丢进去一篇小说它从角色分镜一路做到成片怎么用整个流程就4步1丢进小说或剧本ai先拆内容排项目2生成角色场景道具的参考图后面每个镜",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:51:42.335Z",
+          "metrics": {
+            "likes": 512,
+            "views": 43203
+          },
+          "access": "search",
+          "evidence": "卧槽，GitHub 上这个开源项目，\n直接把「小说变短剧」做成了一条流水线。\n\nGitHub 上有个开源项目 ArcReel，专门治这个。\n丢进去一篇小说，它从角色、分镜一路做到成片。\n\n怎么用？\n整个流程就 4 步：\n\n1.丢进小说或剧本，AI 先拆内容、排项目\n2.生成角色、场景、道具的参考图，后面每个镜头都拿它们"
+        }
+      ]
+    },
+    {
+      "id": "77305ca320bf1b39fe36",
+      "platform": "x",
+      "url": "https://x.com/i/status/2116898627109142568",
+      "title": "AID Studio：开源一站式 AI 漫剧/短剧平台（剧本→分镜→视频→配音）\n\n做漫剧最耗我的不是写词，是来回搬素材。\n\n剧本在 A，角色图在 B，分镜又开 C，视频和配音再换两家——剪到一半发现同一角色脸变了三次。\n\nAID Studio 把整条流水线收进一个项目：剧本与分集、角色道具场景资产库、分镜工作台、图/视频生成、多音色 TTS 与对口型。支持工作流画布串联节点；模型可配即梦、Vidu、火山、DashScope、Gemini、MiniMax 等。生成质量取决于你",
+      "author": "bitmeowAI",
+      "text": "AID Studio：开源一站式 AI 漫剧/短剧平台（剧本→分镜→视频→配音）\n\n做漫剧最耗我的不是写词，是来回搬素材。\n\n剧本在 A，角色图在 B，分镜又开 C，视频和配音再换两家——剪到一半发现同一角色脸变了三次。\n\nAID Studio 把整条流水线收进一个项目：剧本与分集、角色道具场景资产库、分镜工作台、图/视频生成、多音色 TTS 与对口型。支持工作流画布串联节点；模型可配即梦、Vidu、火山、DashScope、Gemini、MiniMax 等。生成质量取决于你接的模型和素材；自建可用官方一键脚本 Docker 部署。\n\n仓库与教程：\nhttps://t.co/qAUbBjkxp0\nhttps://t.co/OfqOAqDMgj\n\n角色资产复用以后，同脸跨镜终于稳一点。记住：出片要你自己的模型 Key，电费和 API 费还是会发生，只是工具链不再散架。",
+      "publishedAt": "2026-11-01T14:22:17.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "second",
+      "firstSeenAt": "2026-11-02T07:51:42.335Z",
+      "lastSeenAt": "2026-11-02T07:51:42.335Z",
+      "metrics": {
+        "likes": 3,
+        "views": 235
+      },
+      "query": "(AI 短剧) since:2026-11-01 -filter:replies",
+      "evidence": "AID Studio：开源一站式 AI 漫剧/短剧平台（剧本→分镜→视频→配音）\n\n做漫剧最耗我的不是写词，是来回搬素材。\n\n剧本在 A，角色图在 B，分镜又开 C，视频和配音再换两家——剪到一半发现同一角色脸变了三次。\n\nAID Studio 把整条流水线收进一个项目：剧本与分集、角色道具场景资产库、分镜工作台、图/视频生成、多音色 TTS 与对口型。支持工作流画布串联节点；模型可配即梦、Vidu、火山、DashScope、Gemin",
+      "access": "search",
+      "publisherId": "x:bitmeowai",
+      "category": "AI 短剧",
+      "tags": [
+        "Seedance",
+        "AI 短剧"
+      ],
+      "summary": "AID Studio：开源一站式 AI 漫剧/短剧平台（剧本→分镜→视频→配音）\n\n做漫剧最耗我的不是写词，是来回搬素材。\n\n剧本在 A，角色图在 B，分镜又开 C，视频和配音再换两家——剪到一半发现同一角色脸变了三次。\n\nAID Studio 把整条流水线收进一个项目：剧本与分集、角色道具场景资产库、分镜工作台、图/视频生成、多音色 TTS 与对口型。支持",
+      "score": 90,
+      "scoreMode": "rules",
+      "status": "selected",
+      "eventKey": "title:aidstudio开源一站式ai漫剧短剧平台剧本分镜视频配音做漫剧最耗我的不是写词是来回搬素材剧本在a角色图在b分镜又开c视频和配音再换两家剪到一半发现同一角色脸变了三次aidstudio把整条流水线收进一个项目剧本与分集角色道具场景资产库",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:51:42.335Z",
+          "metrics": {
+            "likes": 3,
+            "views": 235
+          },
+          "access": "search",
+          "evidence": "AID Studio：开源一站式 AI 漫剧/短剧平台（剧本→分镜→视频→配音）\n\n做漫剧最耗我的不是写词，是来回搬素材。\n\n剧本在 A，角色图在 B，分镜又开 C，视频和配音再换两家——剪到一半发现同一角色脸变了三次。\n\nAID Studio 把整条流水线收进一个项目：剧本与分集、角色道具场景资产库、分镜工作台、图/"
+        }
+      ]
+    },
+    {
+      "id": "4c17d624b327bad53716",
+      "platform": "x",
+      "url": "https://x.com/i/status/2116757551731839389",
+      "title": "做 AI 漫剧，最难的不是出图，是“同一个角色从头到尾像同一个人”。\n\nAID Studio 是我做的开源 AI 漫剧/短剧创作平台，把整条流程放进一个项目里：\n\n📝 剧本：写好或导入故事，拆成分集和分镜\n👤 角色资产库：每个角色先建好设定和参考图，后面所有镜头都引用同一份资产\n🎬 分镜出图出片：按镜头生成画面和视频，模型可以自己配\n🎙 配音合成：配音、画面、字幕在同一个项目里合成成片\n\n怎么保持角色一致？\n1. 角色先定型再开拍，参考图锁在资产库里，不是每个镜头临时",
+      "author": "cehgnfeng15314",
+      "text": "做 AI 漫剧，最难的不是出图，是“同一个角色从头到尾像同一个人”。\n\nAID Studio 是我做的开源 AI 漫剧/短剧创作平台，把整条流程放进一个项目里：\n\n📝 剧本：写好或导入故事，拆成分集和分镜\n👤 角色资产库：每个角色先建好设定和参考图，后面所有镜头都引用同一份资产\n🎬 分镜出图出片：按镜头生成画面和视频，模型可以自己配\n🎙 配音合成：配音、画面、字幕在同一个项目里合成成片\n\n怎么保持角色一致？\n1. 角色先定型再开拍，参考图锁在资产库里，不是每个镜头临时写提示词\n2. 分镜直接关联角色资产，换镜头、换表情还是同一套参考\n3. 剧本、分镜、素材都在一个项目里管理，不会东一张西一张对不上\n\n自己部署，Docker 一键启动，数据在自己手里。\n\n开源地址：https://t.co/E18IftCVq9\n\n你们做漫剧时角色一致性是怎么解决的？欢迎交流🙌",
+      "publishedAt": "2026-11-01T05:01:42.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "second",
+      "firstSeenAt": "2026-11-02T07:51:42.335Z",
+      "lastSeenAt": "2026-11-02T07:51:42.335Z",
+      "metrics": {
+        "likes": 30,
+        "views": 1477
+      },
+      "query": "(AI 短剧) since:2026-11-01 -filter:replies",
+      "evidence": "做 AI 漫剧，最难的不是出图，是“同一个角色从头到尾像同一个人”。\n\nAID Studio 是我做的开源 AI 漫剧/短剧创作平台，把整条流程放进一个项目里：\n\n📝 剧本：写好或导入故事，拆成分集和分镜\n👤 角色资产库：每个角色先建好设定和参考图，后面所有镜头都引用同一份资产\n🎬 分镜出图出片：按镜头生成画面和视频，模型可以自己配\n🎙 配音合成：配音、画面、字幕在同一个项目里合成成片\n\n怎么保持角色一致？\n1. 角色先定型再开",
+      "access": "search",
+      "publisherId": "x:cehgnfeng15314",
+      "category": "AI 短剧",
+      "tags": [
+        "AI 短剧"
+      ],
+      "summary": "做 AI 漫剧，最难的不是出图，是“同一个角色从头到尾像同一个人”。\n\nAID Studio 是我做的开源 AI 漫剧/短剧创作平台，把整条流程放进一个项目里：\n\n📝 剧本：写好或导入故事，拆成分集和分镜\n👤 角色资产库：每个角色先建好设定和参考图，后面所有镜头都引用同一份资产\n🎬 分镜出图出片：按镜头生成画面和视频，模型可以自己配\n🎙 配音合成：配",
+      "score": 90,
+      "scoreMode": "rules",
+      "status": "selected",
+      "eventKey": "title:做ai漫剧最难的不是出图是同一个角色从头到尾像同一个人aidstudio是我做的开源ai漫剧短剧创作平台把整条流程放进一个项目里剧本写好或导入故事拆成分集和分镜角色资产库每个角色先建好设定和参考图后面所有镜头都引用同一份资产分镜出图出片按镜",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:51:42.335Z",
+          "metrics": {
+            "likes": 30,
+            "views": 1477
+          },
+          "access": "search",
+          "evidence": "做 AI 漫剧，最难的不是出图，是“同一个角色从头到尾像同一个人”。\n\nAID Studio 是我做的开源 AI 漫剧/短剧创作平台，把整条流程放进一个项目里：\n\n📝 剧本：写好或导入故事，拆成分集和分镜\n👤 角色资产库：每个角色先建好设定和参考图，后面所有镜头都引用同一份资产\n🎬 分镜出图出片：按镜头生成画面和"
+        }
+      ]
+    },
+    {
+      "id": "be8c0570e517705a89d1",
+      "platform": "douyin",
+      "url": "https://www.douyin.com/video/7697873125866809701",
+      "title": "本作品使用LibTV制作 #LibTV  #LibTV创作者成长计划\n上世纪的美国，氛围真的太好#ai短片#ai生成",
+      "author": "CyberRift  AI",
+      "text": "本作品使用LibTV制作 #LibTV  #LibTV创作者成长计划\n上世纪的美国，氛围真的太好#ai短片#ai生成",
+      "publishedAt": "2026-10-18T05:19:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "minute",
+      "firstSeenAt": "2026-11-02T08:03:57.996Z",
+      "lastSeenAt": "2026-11-02T08:03:57.996Z",
+      "metrics": {
+        "likes": 422000
+      },
+      "query": "AI 视频",
+      "evidence": "本作品使用LibTV制作 #LibTV  #LibTV创作者成长计划\n上世纪的美国，氛围真的太好#ai短片#ai生成；页面发布时间：发布时间：2026-10-18 13:19",
+      "access": "detail",
+      "publisherId": "douyin:cyberrift  ai",
+      "category": "AI 视频",
+      "tags": [],
+      "summary": "本作品使用LibTV制作 #LibTV  #LibTV创作者成长计划\n上世纪的美国，氛围真的太好#ai短片#ai生成",
+      "score": 40,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:本作品使用libtv制作上世纪的美国氛围真的太好",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T08:03:57.996Z",
+          "metrics": {
+            "likes": 422000
+          },
+          "access": "detail",
+          "evidence": "本作品使用LibTV制作 #LibTV  #LibTV创作者成长计划\n上世纪的美国，氛围真的太好#ai短片#ai生成；页面发布时间：发布时间：2026-10-18 13:19"
+        }
+      ]
+    },
+    {
+      "id": "1a00f7905bc1c0232500",
+      "platform": "douyin",
+      "url": "https://www.douyin.com/video/7702342382892616969",
+      "title": "一口气教会你4种电影感AI运镜，学不会你打我！！ #AI教学 #电影感 #AI大片 #AI视频 #抖音精选 \n自发分享，无营销属性",
+      "author": "虾滑XIAHUA.",
+      "text": "一口气教会你4种电影感AI运镜，学不会你打我！！ #AI教学 #电影感 #AI大片 #AI视频 #抖音精选 \n自发分享，无营销属性",
+      "publishedAt": "2026-10-30T06:37:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "minute",
+      "firstSeenAt": "2026-11-02T08:03:57.996Z",
+      "lastSeenAt": "2026-11-02T08:03:57.996Z",
+      "metrics": {
+        "likes": 44000
+      },
+      "query": "AI 视频",
+      "evidence": "一口气教会你4种电影感AI运镜，学不会你打我！！ #AI教学 #电影感 #AI大片 #AI视频 #抖音精选 \n自发分享，无营销属性；页面发布时间：发布时间：2026-10-30 14:37",
+      "access": "detail",
+      "publisherId": "douyin:虾滑xiahua.",
+      "category": "AI 视频",
+      "tags": [],
+      "summary": "一口气教会你4种电影感AI运镜，学不会你打我！！ #AI教学 #电影感 #AI大片 #AI视频 #抖音精选 \n自发分享，无营销属性",
+      "score": 40,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:一口气教会你4种电影感ai运镜学不会你打我自发分享无营销属性",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T08:03:57.996Z",
+          "metrics": {
+            "likes": 44000
+          },
+          "access": "detail",
+          "evidence": "一口气教会你4种电影感AI运镜，学不会你打我！！ #AI教学 #电影感 #AI大片 #AI视频 #抖音精选 \n自发分享，无营销属性；页面发布时间：发布时间：2026-10-30 14:37"
+        }
+      ]
     }
   ],
   "runs": [
+    {
+      "id": "09940160-26c7-4bca-a102-2fde2cdd5e4a",
+      "platform": "xiaohongshu",
+      "query": "AI 视频",
+      "startedAt": "2026-11-02T08:03:58.025510Z",
+      "completedAt": "2026-11-02T08:04:19.249Z",
+      "status": "ok",
+      "created": 2,
+      "updated": 0,
+      "received": 2,
+      "pending": 5,
+      "message": "2 条真实资料 · 0 条已核对日期"
+    },
+    {
+      "id": "2307827d-e1e2-457c-9970-be6efa46a4a6",
+      "platform": "douyin",
+      "query": "AI 视频",
+      "startedAt": "2026-11-02T08:03:33.044252Z",
+      "completedAt": "2026-11-02T08:03:57.996Z",
+      "status": "ok",
+      "created": 2,
+      "updated": 0,
+      "received": 2,
+      "pending": 3,
+      "message": "2 条真实资料 · 2 条已核对日期"
+    },
+    {
+      "id": "19be4617-402a-4afd-b839-63b1ed851785",
+      "platform": "xiaohongshu",
+      "query": "AI 短剧",
+      "startedAt": "2026-11-02T08:00:36.585400Z",
+      "completedAt": "2026-11-02T08:01:14.809Z",
+      "status": "ok",
+      "created": 0,
+      "updated": 3,
+      "received": 3,
+      "pending": 3,
+      "message": "3 条真实资料 · 1 条已核对日期"
+    },
+    {
+      "id": "676990e8-5d85-4d8d-aefa-5e4bd1cddad2",
+      "platform": "douyin",
+      "query": "AI 短剧",
+      "startedAt": "2026-11-02T08:00:02.793363Z",
+      "completedAt": "2026-11-02T08:00:36.556Z",
+      "status": "ok",
+      "created": 0,
+      "updated": 3,
+      "received": 3,
+      "pending": 4,
+      "message": "3 条真实资料 · 3 条已核对日期"
+    },
+    {
+      "id": "bb4bbfbc-36d1-4c10-baa3-d69a78985342",
+      "platform": "x",
+      "query": "(AI 短剧) since:2026-11-01 -filter:replies",
+      "startedAt": "2026-11-02T07:51:35.591348Z",
+      "completedAt": "2026-11-02T07:51:42.335Z",
+      "status": "ok",
+      "created": 3,
+      "updated": 0,
+      "received": 3,
+      "pending": 7,
+      "message": "3 条真实检索结果"
+    },
+    {
+      "id": "eac52560-f7d5-4e24-b50c-e0b8d1bd5428",
+      "platform": "xiaohongshu",
+      "query": "AI 短剧",
+      "startedAt": "2026-11-02T07:51:30.134335Z",
+      "completedAt": "2026-11-02T07:51:35.559Z",
+      "status": "ok",
+      "created": 3,
+      "updated": 0,
+      "received": 3,
+      "pending": 7,
+      "message": "3 条真实检索结果；首次导入归档"
+    },
+    {
+      "id": "62a02b4f-6cee-40b6-837d-0ed1bb4d1c14",
+      "platform": "douyin",
+      "query": "AI 短剧",
+      "startedAt": "2026-11-02T07:51:19.826956Z",
+      "completedAt": "2026-11-02T07:51:30.105Z",
+      "status": "ok",
+      "created": 3,
+      "updated": 0,
+      "received": 3,
+      "pending": 5,
+      "message": "3 条真实检索结果；首次导入归档"
+    },
+    {
+      "id": "e7bd29b4-a9c8-4807-9a82-05e157fcaf2e",
+      "platform": "youtube",
+      "query": "Claude code animation",
+      "startedAt": "2026-11-02T07:48:34.915018Z",
+      "completedAt": "2026-11-02T07:48:50.875Z",
+      "status": "ok",
+      "created": 3,
+      "updated": 0,
+      "received": 3,
+      "pending": 2,
+      "message": "3 条真实检索结果"
+    },
     {
       "id": "bfc1e6bd-359d-44dc-b3ab-3af9d5a8df4c",
       "platform": "x",
@@ -368,6 +992,38 @@
     {
       "at": "2026-11-02T07:21:07.512Z",
       "values": {}
+    },
+    {
+      "at": "2026-11-02T07:48:50.875Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T07:51:30.105Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T07:51:35.559Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T07:51:42.335Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T08:00:36.556Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T08:01:14.809Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T08:03:57.996Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T08:04:19.249Z",
+      "values": {}
     }
   ],
   "sources": [
@@ -383,11 +1039,11 @@
         "Claude 动画",
         "Seedance"
       ],
-      "cursor": 0,
-      "state": "needs_login",
-      "lastAttemptAt": "2026-11-02T07:16:32.057Z",
-      "lastSuccessAt": null,
-      "message": "Douyin search results are blocked behind a login wall — log in at https://www.douyin.com in Chrome first."
+      "cursor": 3,
+      "state": "ok",
+      "lastAttemptAt": "2026-11-02T08:03:57.996Z",
+      "lastSuccessAt": "2026-11-02T08:03:57.996Z",
+      "message": "2 条真实资料 · 2 条已核对日期"
     },
     {
       "platform": "xiaohongshu",
@@ -401,11 +1057,11 @@
         "Claude 动画",
         "Seedance"
       ],
-      "cursor": 0,
-      "state": "needs_login",
-      "lastAttemptAt": "2026-11-02T07:15:14.944Z",
-      "lastSuccessAt": null,
-      "message": "Xiaohongshu search results are blocked behind a login wall"
+      "cursor": 3,
+      "state": "ok",
+      "lastAttemptAt": "2026-11-02T08:04:19.249Z",
+      "lastSuccessAt": "2026-11-02T08:04:19.249Z",
+      "message": "2 条真实资料 · 0 条已核对日期"
     },
     {
       "platform": "youtube",
@@ -419,10 +1075,10 @@
         "Seedance",
         "AIGC"
       ],
-      "cursor": 2,
+      "cursor": 3,
       "state": "ok",
-      "lastAttemptAt": "2026-11-02T07:19:55.555Z",
-      "lastSuccessAt": "2026-11-02T07:19:55.555Z",
+      "lastAttemptAt": "2026-11-02T07:48:50.875Z",
+      "lastSuccessAt": "2026-11-02T07:48:50.875Z",
       "message": "3 条真实检索结果"
     },
     {
@@ -437,11 +1093,11 @@
         "Seedance",
         "AIGC"
       ],
-      "cursor": 2,
+      "cursor": 3,
       "state": "ok",
-      "lastAttemptAt": "2026-11-02T07:21:07.512Z",
-      "lastSuccessAt": "2026-11-02T07:21:07.512Z",
-      "message": "5 条真实检索结果"
+      "lastAttemptAt": "2026-11-02T07:51:42.335Z",
+      "lastSuccessAt": "2026-11-02T07:51:42.335Z",
+      "message": "3 条真实检索结果"
     }
   ]
 }

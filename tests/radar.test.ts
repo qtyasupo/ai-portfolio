@@ -36,6 +36,30 @@ afterEach(() => {
   delete process.env.RADAR_ADMIN_TOKEN;
 });
 describe("资料入库与公开出口", () => {
+  it("搜索标题没有AI关键词时，详情补齐后按真实正文重新分类", () => {
+    const s = emptyState();
+    const original = sample({
+      title: "九命巷",
+      text: "",
+      publishedAt: null,
+      access: "search",
+    });
+    ingest(s, [original], NOW);
+    expect(s.items[0].status).toBe("excluded");
+    ingest(
+      s,
+      [
+        {
+          ...original,
+          text: "#AI漫剧 #AI生图 川渝猫帮的制作过程",
+          access: "detail",
+        },
+      ],
+      NOW,
+    );
+    expect(s.items[0].status).toBe("pending");
+    expect(s.items[0].category).toBe("AI 短剧");
+  });
   it("同一视频不同分享链接更新同一资料，保留两次观察", async () => {
     await ingestBatch([sample()], {}, db);
     await ingestBatch(

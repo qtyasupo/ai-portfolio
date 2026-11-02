@@ -1328,8 +1328,10 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 <span>
                   发布于{" "}
                   {detail.datePrecision === "day"
-                    ? time(detail.publishedAt) + "（原平台仅提供日期）"
-                    : time(detail.publishedAt, true)}
+                    ? time(detail.publishedAt, true).split(" ")[0] +
+                      "（按日期记录）"
+                    : (detail.datePrecision === "minute" ? "约 " : "") +
+                      time(detail.publishedAt, true)}
                 </span>
               </div>
               <p className="detail-summary">{detail.summary}</p>

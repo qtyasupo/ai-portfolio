@@ -26,7 +26,7 @@ export interface Candidate {
   text?: string;
   publishedAt?: string | null;
   dateConfidence?: "verified" | "estimated" | "unknown";
-  datePrecision?: "day" | "second";
+  datePrecision?: "day" | "minute" | "second";
   metrics?: Metrics;
   query?: string;
   evidence?: string;
@@ -50,7 +50,7 @@ export interface Item {
   text: string;
   publishedAt: string | null;
   dateConfidence: "verified" | "estimated" | "unknown";
-  datePrecision?: "day" | "second";
+  datePrecision?: "day" | "minute" | "second";
   firstSeenAt: string;
   lastSeenAt: string;
   metrics: Metrics;

@@ -14,6 +14,7 @@ import subprocess
 import sys
 import time
 from datetime import datetime, timezone
+from public_dates import parse_public_date
 
 ROOT=Path(__file__).resolve().parent.parent
 STATE=ROOT/".radar"
@@ -82,7 +83,7 @@ def normalize(platform,raw,query):
     if platform=="xiaohongshu" and published:confidence="estimated";published=None
     if platform=="douyin":published=None
     metrics={}
-    fields={"likes":["likes","like_count","liked_count","digg_count"],"views":["views","view_count","play_count"],"comments":["comments","comment_count","reply_count"],"favorites":["favorites","collect_count","collected_count"],"shares":["shares","share_count","retweet_count"]}
+    fields={"likes":["likes","like_count","liked_count","digg_count"],"views":["views","view_count","play_count"],"comments":["comments","comment_count","reply_count"],"favorites":["favorites","collect_count","collected_count","collects"],"shares":["shares","share_count","retweet_count"]}
     if platform=="douyin":fields={"likes":["likes"]} # upstream zero placeholders are NOT observations
     for field,keys in fields.items():
         for key in keys:
@@ -103,13 +104,21 @@ def collect_once(args):
     for s in config():
         platform=s["platform"]
         if not s["enabled"] or (args.platform and platform not in args.platform):continue
+        if args.enrich_existing and platform not in {"douyin","xiaohongshu"}:continue
         if s["state"] in {"needs_login","blocked","rate_limited"}:
             print(json.dumps({"platform":platform,"skipped":True,"reason":s["state"]}),flush=True);continue
         if not s["queries"]:continue
         query=args.query or s["queries"][s["cursor"]%len(s["queries"])]
         started=now()
         print(json.dumps({"platform":platform,"query":query,"state":"running"},ensure_ascii=False),flush=True)
-        if platform=="douyin":
+        if args.enrich_existing:
+            saved_file=STATE/f"batch-{platform}.json"
+            if not saved_file.is_file():
+                print(json.dumps({"platform":platform,"skipped":True,"reason":"没有上次检索结果"},ensure_ascii=False),flush=True);continue
+            saved=json.loads(saved_file.read_text(encoding="utf-8-sig"))
+            query=saved.get("query") or query
+            result={"ok":True,"candidates":saved.get("items",[])[:args.limit]}
+        elif platform=="douyin":
             result=run_json([sys.executable,"-X","utf8",str(ROOT/"scripts/browser_search.py"),query,str(args.limit)])
         else:
             channel="twitter" if platform=="x" else platform
@@ -121,7 +130,8 @@ def collect_once(args):
             js_ingest({"platform":platform,"query":query,"error":{"code":error.get("code","UNKNOWN"),"message":str(error.get("message", "平台暂不可用"))[:400]}},platform)
             statuses.append({"platform":platform,"status":"error","code":error.get("code")});continue
         rows=result.get("items") or result.get("rows") or []
-        items=[c for row in rows if (c:=normalize(platform,row,query))]
+        items=result.get("candidates") if "candidates" in result else [c for row in rows if (c:=normalize(platform,row,query))]
+        detail_error=None
         # Search-only YouTube output often lacks a date; read a bounded number of metadata pages.
         if platform=="youtube":
             for i,item in enumerate(items[:args.limit]):
@@ -130,10 +140,32 @@ def collect_once(args):
                     if detail.get("ok") and detail.get("items"):
                         enriched=normalize(platform,detail["items"][0],query)
                         if enriched:enriched["access"]="detail";items[i]=enriched
+                    elif not detail.get("ok"):
+                        detail_error=detail.get("error") or {"code":"UNKNOWN","message":"详情读取失败"}
+                        break # Never continue requesting a platform after login/verification/rate-limit/timeout.
+        if platform in {"douyin","xiaohongshu"}:
+            for item in items[:args.limit]:
+                detail=run_json([sys.executable,"-X","utf8",str(ROOT/"scripts/public_detail.py"),platform,item["url"]],timeout=120)
+                if not detail.get("ok"):
+                    detail_error=detail.get("error") or {"code":"UNKNOWN","message":"详情读取失败"};break
+                page=detail.get("data") or {}
+                date,precision,raw_date=parse_public_date(page,detail["observedAt"])
+                if date:item.update(publishedAt=date,dateConfidence="verified",datePrecision=precision)
+                if page.get("noteText"):item["text"]=page["noteText"]
+                if page.get("noteTitle"):item["title"]=page["noteTitle"]
+                if page.get("author"):item["author"]=page["author"]
+                item["access"]="detail"
+                item["evidence"]=(item["title"][:180]+(f"；页面发布时间：{raw_date}" if raw_date else ""))[:400]
+                for key,value in (page.get("counts") or {}).items():
+                    number=count(value)
+                    if number is not None:item.setdefault("metrics",{})[key]=number
         first_import=not s.get("lastSuccessAt")
-        js_ingest({"platform":platform,"query":query,"startedAt":started,"items":items,"backfill":first_import,
-                   "message":f"{len(items)} 条真实检索结果；首次导入归档" if first_import else f"{len(items)} 条真实检索结果"},platform)
-        statuses.append({"platform":platform,"status":"ok","count":len(items)})
+        verified=sum(i.get("dateConfidence")=="verified" for i in items)
+        message=f"{len(items)} 条真实资料 · {verified} 条已核对日期"+("；首次导入归档" if first_import else "")
+        js_ingest({"platform":platform,"query":query,"startedAt":started,"items":items,"backfill":first_import,"message":message},platform)
+        if detail_error:
+            js_ingest({"platform":platform,"query":query,"error":detail_error},platform)
+        statuses.append({"platform":platform,"status":"partial" if detail_error else "ok","count":len(items),"verifiedDates":verified,**({"error":detail_error.get("code")} if detail_error else {})})
     subprocess.run(node_args("scripts/export.ts"),cwd=ROOT,check=True)
     (STATE/"collector-result.json").write_text(json.dumps({"completedAt":now(),"platforms":statuses},ensure_ascii=False),encoding="utf-8")
 
@@ -143,6 +175,7 @@ def main():
     parser.add_argument("--query")
     parser.add_argument("--limit",type=int,default=5)
     parser.add_argument("--watch",action="store_true")
+    parser.add_argument("--enrich-existing",action="store_true",help="补读最近一次抖音/小红书检索结果，不重新搜索")
     args=parser.parse_args();args.limit=min(10,max(1,args.limit))
     lock=STATE/"collector.lock"
     # OS lock is released on process exit, including abnormal exits. Prevent concurrent website/CLI runs.

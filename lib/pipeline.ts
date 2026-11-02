@@ -119,7 +119,7 @@ export function validateCandidates(input: unknown): Candidate[] {
       throw new Error("dateConfidence 无效");
     if (
       r.datePrecision !== undefined &&
-      !["day", "second"].includes(String(r.datePrecision))
+      !["day", "minute", "second"].includes(String(r.datePrecision))
     )
       throw new Error("datePrecision 无效");
     if (
@@ -230,6 +230,19 @@ export function classify(
     : 0;
   return { category, tags, score, relevant };
 }
+export function refreshClassification(item: Item, at: number) {
+  const analysis = classify(item.title, item.text);
+  item.category = analysis.category;
+  item.tags = analysis.tags;
+  if (item.scoreMode === "rules") item.score = analysis.score;
+  item.status = !analysis.relevant
+    ? "excluded"
+    : !item.publishedAt
+      ? "pending"
+      : item.backfill || at - Date.parse(item.publishedAt) > 48 * HOUR
+        ? "archive"
+        : "selected";
+}
 function fingerprint(title: string): string {
   return title
     .toLowerCase()
@@ -298,6 +311,7 @@ export function ingest(
           : "excluded";
       }
       if (c.eventKey) old.eventKey = c.eventKey.slice(0, 160);
+      refreshClassification(old, now);
       updated++;
       continue;
     }
