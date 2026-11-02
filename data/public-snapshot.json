@@ -1,0 +1,447 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-02T07:21:07.512Z",
+  "items": [
+    {
+      "id": "633b1955ccbda59d1cf9",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/watch?v=tnG3TIULBro",
+      "title": "I Tried Every AI Video Generator - Full Tierlist",
+      "author": "Dan Kieft",
+      "text": "Find out what the Best AI Video Generator is in 2026!\nTry out all models 👉 https://tolt.link/tierlist\n\nI tested the 6 most popular AI video generators of 2026 in an 8-round head-to-head battle to find out which one is ACTUALLY the best. Seedance 2.5, Wan 3.0, MiniMax H3 Max, Flux 3, Kling 4.0 Flash and Gemini Omni 1.1 Flash all got the exact same prompts and the same references — then I ranked ev",
+      "publishedAt": "2026-10-28T00:00:00.000Z",
+      "dateConfidence": "verified",
+      "firstSeenAt": "2026-11-02T07:15:35.823Z",
+      "lastSeenAt": "2026-11-02T07:19:55.555Z",
+      "metrics": {
+        "views": 57897
+      },
+      "query": "AI video",
+      "evidence": "I Tried Every AI Video Generator - Full Tierlist",
+      "access": "detail",
+      "publisherId": "youtube:dan kieft",
+      "category": "AI 视频",
+      "tags": [
+        "Seedance",
+        "可灵"
+      ],
+      "summary": "Find out what the Best AI Video Generator is in 2026!\nTry out all models 👉 https://tolt.link/tierlist\n\nI tested the 6 most popular AI video generators of 2026 in an 8-round head-t",
+      "score": 90,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:itriedeveryaivideogeneratorfulltierlist",
+      "backfill": true,
+      "observations": [
+        {
+          "at": "2026-11-02T07:15:35.823Z",
+          "metrics": {
+            "views": 57863
+          },
+          "access": "detail",
+          "evidence": "I Tried Every AI Video Generator - Full Tierlist"
+        },
+        {
+          "at": "2026-11-02T07:19:55.555Z",
+          "metrics": {
+            "views": 57897
+          },
+          "access": "detail",
+          "evidence": "I Tried Every AI Video Generator - Full Tierlist"
+        }
+      ],
+      "datePrecision": "day"
+    },
+    {
+      "id": "262edd7087a26ae144d5",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/watch?v=iO9MiefIpVM",
+      "title": "How To Start Making AI Videos in 2026 (Beginner Guide)",
+      "author": "Dan Kieft",
+      "text": "How To Start Making AI Video in 2026 (Beginner Guide)\nCreat AI Video with Higgsfield 👉 http://dankieft.com/higgsfield\n\n\nAll of my prompts: https://start-making-ai-videos.vercel.app/\n\n\nIn this video I teach you everything you need to know in order to start creating AI videos on higgsfield. We will go over prompting, workflows, references ai images and ai videos. by the end of this you know exactly",
+      "publishedAt": "2026-10-22T00:00:00.000Z",
+      "dateConfidence": "verified",
+      "firstSeenAt": "2026-11-02T07:15:35.823Z",
+      "lastSeenAt": "2026-11-02T07:19:55.555Z",
+      "metrics": {
+        "views": 124135
+      },
+      "query": "AI video",
+      "evidence": "How To Start Making AI Videos in 2026 (Beginner Guide)",
+      "access": "detail",
+      "publisherId": "youtube:dan kieft",
+      "category": "AI 视频",
+      "tags": [],
+      "summary": "How To Start Making AI Video in 2026 (Beginner Guide)\nCreat AI Video with Higgsfield 👉 http://dankieft.com/higgsfield\n\n\nAll of my prompts: https://start-making-ai-videos.vercel.ap",
+      "score": 80,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:howtostartmakingaivideosin2026beginnerguide",
+      "backfill": true,
+      "observations": [
+        {
+          "at": "2026-11-02T07:15:35.823Z",
+          "metrics": {
+            "views": 124109
+          },
+          "access": "detail",
+          "evidence": "How To Start Making AI Videos in 2026 (Beginner Guide)"
+        },
+        {
+          "at": "2026-11-02T07:19:55.555Z",
+          "metrics": {
+            "views": 124135
+          },
+          "access": "detail",
+          "evidence": "How To Start Making AI Videos in 2026 (Beginner Guide)"
+        }
+      ],
+      "datePrecision": "day"
+    },
+    {
+      "id": "3d88b51461a85d9d3235",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/watch?v=tVb3rQuTB1g",
+      "title": "I Tried EVERY Free AI Image Generator in 2026 (These Are ACTUALLY Good)",
+      "author": "Youri van Hofwegen",
+      "text": "In this video, I compare four free AI image generators, ChatGPT, Gemini, Grok, and Ideogram, using the same prompts across realistic portraits, text rendering, product photography, surreal scenes, illustrations, and photo editing. I rank them based on image quality, prompt accuracy, and free usage limits to show which ones are worth using for different types of projects without paying for a subscr",
+      "publishedAt": "2026-10-27T00:00:00.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "day",
+      "firstSeenAt": "2026-11-02T07:19:55.555Z",
+      "lastSeenAt": "2026-11-02T07:19:55.555Z",
+      "metrics": {
+        "views": 28414
+      },
+      "query": "AI video",
+      "evidence": "I Tried EVERY Free AI Image Generator in 2026 (These Are ACTUALLY Good)",
+      "access": "detail",
+      "publisherId": "youtube:youri van hofwegen",
+      "category": "AI 视频",
+      "tags": [],
+      "summary": "In this video, I compare four free AI image generators, ChatGPT, Gemini, Grok, and Ideogram, using the same prompts across realistic portraits, text rendering, product photography,",
+      "score": 80,
+      "scoreMode": "rules",
+      "status": "archive",
+      "eventKey": "title:itriedeveryfreeaiimagegeneratorin2026theseareactuallygood",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:19:55.555Z",
+          "metrics": {
+            "views": 28414
+          },
+          "access": "detail",
+          "evidence": "I Tried EVERY Free AI Image Generator in 2026 (These Are ACTUALLY Good)"
+        }
+      ]
+    },
+    {
+      "id": "36d036357543577e0cb6",
+      "platform": "x",
+      "url": "https://x.com/i/status/2116626031494705365",
+      "title": "You all keep asking in my DMs how I make my AI Blender videos and model comparisons...\n\nPaste this into Claude Code and it will set everything up for you. https://t.co/jtFMkR2jaN",
+      "author": "MrTacticalX",
+      "text": "You all keep asking in my DMs how I make my AI Blender videos and model comparisons...\n\nPaste this into Claude Code and it will set everything up for you. https://t.co/jtFMkR2jaN",
+      "publishedAt": "2026-10-31T20:19:05.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "second",
+      "firstSeenAt": "2026-11-02T07:21:07.512Z",
+      "lastSeenAt": "2026-11-02T07:21:07.512Z",
+      "metrics": {
+        "likes": 27,
+        "views": 16332
+      },
+      "query": "(Claude animation) since:2026-11-01 -filter:replies",
+      "evidence": "You all keep asking in my DMs how I make my AI Blender videos and model comparisons...\n\nPaste this into Claude Code and it will set everything up for you. https://t.co/jtFMkR2jaN",
+      "access": "search",
+      "publisherId": "x:mrtacticalx",
+      "category": "AI 视频",
+      "tags": [
+        "Claude"
+      ],
+      "summary": "You all keep asking in my DMs how I make my AI Blender videos and model comparisons...\n\nPaste this into Claude Code and it will set everything up for you. https://t.co/jtFMkR2jaN",
+      "score": 65,
+      "scoreMode": "rules",
+      "status": "selected",
+      "eventKey": "title:youallkeepaskinginmydmshowimakemyaiblendervideosandmodelcomparisonspastethisintoclaudecodeanditwillseteverythingupforyou",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:21:07.512Z",
+          "metrics": {
+            "likes": 27,
+            "views": 16332
+          },
+          "access": "search",
+          "evidence": "You all keep asking in my DMs how I make my AI Blender videos and model comparisons...\n\nPaste this into Claude Code and it will set everything up for you. https"
+        }
+      ]
+    },
+    {
+      "id": "f191f5cd883dca5b85fe",
+      "platform": "x",
+      "url": "https://x.com/i/status/2116860536075792853",
+      "title": "Claude Opus 5.5 makes videos studios charge $1k+ for\n\nYet most end up with random clips no client will buy\n\nLonger prompts won't fix it\n\nHere are the tools, prompts, and 7 rules to build studio-grade motion and sell it ↓ https://t.co/ppFLhR",
+      "author": "Damir_Akaza",
+      "text": "Claude Opus 5.5 makes videos studios charge $1k+ for\n\nYet most end up with random clips no client will buy\n\nLonger prompts won't fix it\n\nHere are the tools, prompts, and 7 rules to build studio-grade motion and sell it ↓ https://t.co/ppFLhRbWNI",
+      "publishedAt": "2026-11-01T11:50:55.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "second",
+      "firstSeenAt": "2026-11-02T07:21:07.512Z",
+      "lastSeenAt": "2026-11-02T07:21:07.512Z",
+      "metrics": {
+        "likes": 42,
+        "views": 4322
+      },
+      "query": "(Claude animation) since:2026-11-01 -filter:replies",
+      "evidence": "Claude Opus 5.5 makes videos studios charge $1k+ for\n\nYet most end up with random clips no client will buy\n\nLonger prompts won't fix it\n\nHere are the tools, prompts, and 7 rules to build studio-grade motion and sell it ↓",
+      "access": "search",
+      "publisherId": "x:damir_akaza",
+      "category": "Claude 动画",
+      "tags": [
+        "Claude"
+      ],
+      "summary": "Claude Opus 5.5 makes videos studios charge $1k+ for\n\nYet most end up with random clips no client will buy\n\nLonger prompts won't fix it\n\nHere are the tools, prompts, and 7 rules to",
+      "score": 80,
+      "scoreMode": "rules",
+      "status": "selected",
+      "eventKey": "title:claudeopus55makesvideosstudioscharge1kforyetmostendupwithrandomclipsnoclientwillbuylongerpromptswontfixitherearethetools",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:21:07.512Z",
+          "metrics": {
+            "likes": 42,
+            "views": 4322
+          },
+          "access": "search",
+          "evidence": "Claude Opus 5.5 makes videos studios charge $1k+ for\n\nYet most end up with random clips no client will buy\n\nLonger prompts won't fix it\n\nHere are the tools, pro"
+        }
+      ]
+    },
+    {
+      "id": "1e6ac0e72ed05040bccf",
+      "platform": "x",
+      "url": "https://x.com/i/status/2117148447983935908",
+      "title": "same prompt: \"make an animation of a pelican riding a bicycle\"\n\n4 AIs. nobody asked for a sunset.\n\nclaude opus 5.5 · gpt-6.1 terra · gemini 4 argon · claude fable 5.1 https://t.co/L8Gcuu6RRt",
+      "author": "evals_ag",
+      "text": "same prompt: \"make an animation of a pelican riding a bicycle\"\n\n4 AIs. nobody asked for a sunset.\n\nclaude opus 5.5 · gpt-6.1 terra · gemini 4 argon · claude fable 5.1 https://t.co/L8Gcuu6RRt",
+      "publishedAt": "2026-11-02T06:54:59.000Z",
+      "dateConfidence": "verified",
+      "datePrecision": "second",
+      "firstSeenAt": "2026-11-02T07:21:07.512Z",
+      "lastSeenAt": "2026-11-02T07:21:07.512Z",
+      "metrics": {
+        "likes": 0,
+        "views": 54
+      },
+      "query": "(Claude animation) since:2026-11-01 -filter:replies",
+      "evidence": "same prompt: \"make an animation of a pelican riding a bicycle\"\n\n4 AIs. nobody asked for a sunset.\n\nclaude opus 5.5 · gpt-6.1 terra · gemini 4 argon · claude fable 5.1 https://t.co/L8Gcuu6RRt",
+      "access": "search",
+      "publisherId": "x:evals_ag",
+      "category": "Claude 动画",
+      "tags": [
+        "Claude"
+      ],
+      "summary": "same prompt: \"make an animation of a pelican riding a bicycle\"\n\n4 AIs. nobody asked for a sunset.\n\nclaude opus 5.5 · gpt-6.1 terra · gemini 4 argon · claude fable 5.1 https://t.co/",
+      "score": 80,
+      "scoreMode": "rules",
+      "status": "selected",
+      "eventKey": "title:samepromptmakeananimationofapelicanridingabicycle4aisnobodyaskedforasunsetclaudeopus55gpt61terragemini4argonclaudefable5",
+      "backfill": false,
+      "observations": [
+        {
+          "at": "2026-11-02T07:21:07.512Z",
+          "metrics": {
+            "likes": 0,
+            "views": 54
+          },
+          "access": "search",
+          "evidence": "same prompt: \"make an animation of a pelican riding a bicycle\"\n\n4 AIs. nobody asked for a sunset.\n\nclaude opus 5.5 · gpt-6.1 terra · gemini 4 argon · claude fab"
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "id": "bfc1e6bd-359d-44dc-b3ab-3af9d5a8df4c",
+      "platform": "x",
+      "query": "(Claude animation) since:2026-11-01 -filter:replies",
+      "startedAt": "2026-11-02T07:21:00.008792Z",
+      "completedAt": "2026-11-02T07:21:07.512Z",
+      "status": "ok",
+      "created": 5,
+      "updated": 0,
+      "received": 5,
+      "pending": 2,
+      "message": "5 条真实检索结果"
+    },
+    {
+      "id": "60e65dfd-a142-4bad-a6af-65e1f70e6562",
+      "platform": "youtube",
+      "query": "AI video",
+      "startedAt": "2026-11-02T07:19:40.950921Z",
+      "completedAt": "2026-11-02T07:19:55.555Z",
+      "status": "ok",
+      "created": 1,
+      "updated": 2,
+      "received": 3,
+      "pending": 2,
+      "message": "3 条真实检索结果"
+    },
+    {
+      "id": "d45865ea-6c92-43b4-a62f-1dd93638ea44",
+      "platform": "douyin",
+      "query": "AI 视频",
+      "startedAt": "2026-11-02T07:16:32.057Z",
+      "completedAt": "2026-11-02T07:16:32.057Z",
+      "status": "error",
+      "received": 0,
+      "created": 0,
+      "updated": 0,
+      "message": "采集受限，详见本机工作台"
+    },
+    {
+      "id": "f909db07-0848-4556-9744-c63d84129d1e",
+      "platform": "x",
+      "query": "(AI video) since:2026-11-01 -filter:replies",
+      "startedAt": "2026-11-02T07:15:35.850384Z",
+      "completedAt": "2026-11-02T07:15:43.148Z",
+      "status": "ok",
+      "created": 3,
+      "updated": 0,
+      "received": 3,
+      "pending": 4,
+      "message": "3 条真实检索结果；首次导入归档"
+    },
+    {
+      "id": "9711da93-a612-4c3c-bbf5-70f6c82c1d7d",
+      "platform": "youtube",
+      "query": "AI video",
+      "startedAt": "2026-11-02T07:15:14.967503Z",
+      "completedAt": "2026-11-02T07:15:35.823Z",
+      "status": "ok",
+      "created": 3,
+      "updated": 0,
+      "received": 3,
+      "pending": 3,
+      "message": "3 条真实检索结果；首次导入归档"
+    },
+    {
+      "id": "e2d440b9-e7fb-45fe-b6ed-3c5218b462da",
+      "platform": "xiaohongshu",
+      "query": "AI 视频",
+      "startedAt": "2026-11-02T07:15:14.944Z",
+      "completedAt": "2026-11-02T07:15:14.944Z",
+      "status": "error",
+      "received": 0,
+      "created": 0,
+      "updated": 0,
+      "message": "采集受限，详见本机工作台"
+    },
+    {
+      "id": "4cd98456-1aae-414c-8a1a-39989dd9ef28",
+      "platform": "douyin",
+      "query": "AI 视频",
+      "startedAt": "2026-11-02T07:14:59.663Z",
+      "completedAt": "2026-11-02T07:14:59.663Z",
+      "status": "error",
+      "received": 0,
+      "created": 0,
+      "updated": 0,
+      "message": "采集受限，详见本机工作台"
+    }
+  ],
+  "heatHistory": [
+    {
+      "at": "2026-11-02T07:15:35.823Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T07:15:43.148Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T07:19:55.555Z",
+      "values": {}
+    },
+    {
+      "at": "2026-11-02T07:21:07.512Z",
+      "values": {}
+    }
+  ],
+  "sources": [
+    {
+      "platform": "douyin",
+      "name": "抖音",
+      "enabled": true,
+      "queries": [
+        "AI 视频",
+        "AI 短剧",
+        "AIGC",
+        "代码动画",
+        "Claude 动画",
+        "Seedance"
+      ],
+      "cursor": 0,
+      "state": "needs_login",
+      "lastAttemptAt": "2026-11-02T07:16:32.057Z",
+      "lastSuccessAt": null,
+      "message": "Douyin search results are blocked behind a login wall — log in at https://www.douyin.com in Chrome first."
+    },
+    {
+      "platform": "xiaohongshu",
+      "name": "小红书",
+      "enabled": true,
+      "queries": [
+        "AI 视频",
+        "AI 短剧",
+        "AIGC",
+        "代码动画",
+        "Claude 动画",
+        "Seedance"
+      ],
+      "cursor": 0,
+      "state": "needs_login",
+      "lastAttemptAt": "2026-11-02T07:15:14.944Z",
+      "lastSuccessAt": null,
+      "message": "Xiaohongshu search results are blocked behind a login wall"
+    },
+    {
+      "platform": "youtube",
+      "name": "YouTube",
+      "enabled": true,
+      "queries": [
+        "AI video",
+        "AI short film",
+        "Claude animation",
+        "code animation",
+        "Seedance",
+        "AIGC"
+      ],
+      "cursor": 2,
+      "state": "ok",
+      "lastAttemptAt": "2026-11-02T07:19:55.555Z",
+      "lastSuccessAt": "2026-11-02T07:19:55.555Z",
+      "message": "3 条真实检索结果"
+    },
+    {
+      "platform": "x",
+      "name": "X",
+      "enabled": true,
+      "queries": [
+        "AI video",
+        "AI short film",
+        "Claude animation",
+        "code animation",
+        "Seedance",
+        "AIGC"
+      ],
+      "cursor": 2,
+      "state": "ok",
+      "lastAttemptAt": "2026-11-02T07:21:07.512Z",
+      "lastSuccessAt": "2026-11-02T07:21:07.512Z",
+      "message": "5 条真实检索结果"
+    }
+  ]
+}
