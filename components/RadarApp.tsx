@@ -12,19 +12,13 @@ import {
   ChevronRight,
   CircleHelp,
   Clock3,
-  Code2,
-  Command,
   Database,
   ExternalLink,
   FileText,
-  Film,
   Flame,
-  Globe2,
   Heart,
-  LayoutGrid,
   ListFilter,
   LoaderCircle,
-  Menu,
   Play,
   Plus,
   Radio,
@@ -32,10 +26,6 @@ import {
   Search,
   Settings2,
   ShieldCheck,
-  Sparkles,
-  TrendingUp,
-  Video,
-  Workflow,
   X as CloseIcon,
 } from "lucide-react";
 import {
@@ -51,13 +41,12 @@ import {
 
 type View = "discover" | "trends" | "brief" | "saved" | "desk";
 const NAV = [
-  { id: "discover" as const, label: "发现灵感", icon: LayoutGrid },
-  { id: "trends" as const, label: "热点追踪", icon: Flame },
-  { id: "brief" as const, label: "创作日报", icon: FileText },
-  { id: "saved" as const, label: "我的收藏", icon: Bookmark },
+  { id: "discover" as const, label: "浏览资料" },
+  { id: "saved" as const, label: "我的收藏" },
+  { id: "brief" as const, label: "创作日报" },
 ];
 const LABELS: Record<View, string> = {
-  discover: "发现灵感",
+  discover: "浏览资料",
   trends: "热点追踪",
   brief: "创作日报",
   saved: "我的收藏",
@@ -77,7 +66,6 @@ const STATUS: Record<Source["state"], string> = {
   rate_limited: "已暂停 · 限流",
   error: "采集异常",
 };
-const ICONS = [Film, Video, Code2, Command, Sparkles, Workflow];
 function PlatformMark({
   platform,
   small = false,
@@ -137,7 +125,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   const [detail, setDetail] = useState<Item | null>(null);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState("");
-  const [menu, setMenu] = useState(false);
+  const [scope, setScope] = useState("all");
   const [token, setToken] = useState("");
   const [importText, setImportText] = useState("");
   const [backfill, setBackfill] = useState(true);
@@ -147,8 +135,8 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   const [about, setAbout] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
-  const navigationRef = useRef<HTMLElement>(null);
-  const menuTriggerRef = useRef<HTMLButtonElement>(null);
+  const moreRef = useRef<HTMLDetailsElement>(null);
+  const filterRef = useRef<HTMLDetailsElement>(null);
   const modalOpen = Boolean(detail || about || edit);
   const currentDay = useRef(day);
   currentDay.current = day;
@@ -161,7 +149,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
         setSaved(stored.filter((id): id is string => typeof id === "string"));
     } catch {}
     const v = new URLSearchParams(location.search).get("view");
-    if (v && v in LABELS) setView(v as View);
+    if (v && Object.hasOwn(LABELS, v)) setView(v as View);
   }, []);
   const refresh = useCallback(async () => {
     try {
@@ -187,7 +175,12 @@ export default function RadarApp({ initial }: { initial: Overview }) {
         setDetail(null);
         setAbout(false);
         setEdit(null);
-        setMenu(false);
+        for (const popup of [moreRef.current, filterRef.current]) {
+          if (popup?.open) {
+            popup.open = false;
+            popup.querySelector("summary")?.focus();
+          }
+        }
       }
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
@@ -205,18 +198,15 @@ export default function RadarApp({ initial }: { initial: Overview }) {
     }
   }, [toast]);
   useEffect(() => {
-    if (!modalOpen && !menu) return;
+    if (!modalOpen) return;
     const previous =
-      menu && !modalOpen
-        ? menuTriggerRef.current
-        : document.activeElement instanceof HTMLElement
-          ? document.activeElement
-          : null;
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const panel = modalOpen ? dialogRef.current : navigationRef.current;
-    if (modalOpen) panel?.focus();
-    else panel?.querySelector<HTMLButtonElement>(".nav-close")?.focus();
+    const panel = dialogRef.current;
+    panel?.focus();
     const trap = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
       const dialog = panel;
@@ -252,18 +242,19 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       document.body.style.overflow = overflow;
       previous?.focus();
     };
-  }, [modalOpen, menu]);
+  }, [modalOpen]);
   useEffect(() => {
-    const desktop = window.matchMedia("(min-width: 801px)");
-    const closeOnDesktop = () => {
-      if (desktop.matches) setMenu(false);
+    const closeOutside = (event: MouseEvent) => {
+      for (const popup of [moreRef.current, filterRef.current]) {
+        if (popup && !popup.contains(event.target as Node)) popup.open = false;
+      }
     };
-    desktop.addEventListener("change", closeOnDesktop);
-    return () => desktop.removeEventListener("change", closeOnDesktop);
+    document.addEventListener("click", closeOutside);
+    return () => document.removeEventListener("click", closeOutside);
   }, []);
   const navigate = (next: View) => {
     setView(next);
-    setMenu(false);
+    if (moreRef.current) moreRef.current.open = false;
     window.scrollTo({ top: 0, behavior: "instant" });
     history.replaceState(
       null,
@@ -315,33 +306,28 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   );
   const pending = data.state.items.filter((i) => i.status === "pending");
   const hasFilters = Boolean(
-    q.trim() || platform !== "all" || category !== "all" || days !== "all",
+    q.trim() ||
+    platform !== "all" ||
+    category !== "all" ||
+    days !== "all" ||
+    scope !== "all",
   );
   const resetFilters = () => {
     setQ("");
     setPlatform("all");
     setCategory("all");
     setDays("all");
+    setScope("all");
   };
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const cutoff = Date.now() - Number(days) * 86400000;
     return data.state.items
       .filter((i) => {
-        if (view === "saved") {
-          if (
-            !saved.includes(i.id) ||
-            !["selected", "archive"].includes(i.status)
-          )
-            return false;
-        } else if (
-          tab === "archive"
-            ? i.status !== "archive"
-            : tab === "latest"
-              ? i.status !== "selected"
-              : !["selected", "archive"].includes(i.status)
-        )
-          return false;
+        if (!["selected", "archive"].includes(i.status)) return false;
+        if (view === "saved" && !saved.includes(i.id)) return false;
+        if (scope === "archive" && i.status !== "archive") return false;
+        if (scope === "selected" && i.status !== "selected") return false;
         return (
           (platform === "all" || i.platform === platform) &&
           (category === "all" || i.category === category) &&
@@ -361,16 +347,8 @@ export default function RadarApp({ initial }: { initial: Overview }) {
             Date.parse(b.publishedAt || b.firstSeenAt) -
               Date.parse(a.publishedAt || a.firstSeenAt),
       );
-  }, [data, view, tab, platform, category, q, days, saved]);
-  const topics = useMemo(() => {
-    const counts = new Map<string, number>();
-    visible.forEach((i) =>
-      i.tags.forEach((t) => counts.set(t, (counts.get(t) || 0) + 1)),
-    );
-    return [...counts].toSorted((a, b) => b[1] - a[1]).slice(0, 6);
-  }, [visible]);
-  const card = (item: Item, index: number) => {
-    const Icon = ICONS[CATEGORIES.indexOf(item.category)];
+  }, [data, view, tab, platform, category, q, days, scope, saved]);
+  const card = (item: Item) => {
     const excerpt = readingExcerpt(item);
     return (
       <article className="signal-card" key={item.id}>
@@ -384,13 +362,6 @@ export default function RadarApp({ initial }: { initial: Overview }) {
           <span>{time(item.publishedAt)}</span>
         </div>
         <div className="signal-body">
-          <div
-            className={`signal-glyph glyph-${CATEGORIES.indexOf(item.category)}`}
-            aria-hidden
-          >
-            <Icon size={28} strokeWidth={1.4} />
-            <span>{String(index + 1).padStart(2, "0")}</span>
-          </div>
           <div className="signal-content">
             <div className="card-labels">
               <span className="category-chip">{item.category}</span>
@@ -402,13 +373,6 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               </button>
             </h2>
             {excerpt.summary && <p>{excerpt.summary}</p>}
-            <div className="tag-row">
-              {item.tags.slice(0, 3).map((t) => (
-                <button key={t} onClick={() => setQ(t)}>
-                  #{t}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
         <div className="signal-footer">
@@ -425,9 +389,6 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 {compact(item.metrics.likes)}
               </span>
             )}
-            <span className="quality" title="资料质量评分，不是平台热度">
-              {item.scoreMode === "rules" ? "规则" : "双模型"} {item.score}
-            </span>
           </div>
           <div className="card-actions">
             <button
@@ -440,6 +401,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 size={16}
                 fill={saved.includes(item.id) ? "currentColor" : "none"}
               />
+              <span>{saved.includes(item.id) ? "已收藏" : "收藏"}</span>
             </button>
             <a
               href={item.url}
@@ -447,7 +409,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               rel="noreferrer"
               aria-label={`打开原文 ${item.title}`}
             >
-              <ArrowUpRight size={18} />
+              原文 <ArrowUpRight size={15} />
             </a>
           </div>
         </div>
@@ -459,539 +421,283 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       <a className="skip-link" href="#radar-main">
         跳至主要内容
       </a>
-      {menu && (
-        <button
-          className="nav-backdrop"
-          aria-label="关闭导航"
-          onClick={() => setMenu(false)}
-        />
-      )}
-      <aside
-        id="radar-navigation"
-        ref={navigationRef}
-        inert={modalOpen}
-        className={`sidebar ${menu ? "mobile-open" : ""}`}
-      >
-        <button
-          className="nav-close icon-button"
-          aria-label="收起导航"
-          onClick={() => setMenu(false)}
-        >
-          <CloseIcon size={20} />
-        </button>
-        <a className="brand" href="/">
-          <span className="brand-logo">
-            <Radio size={24} />
-          </span>
-          <span>
-            YASUPO<span className="brand-sub">AI 创作雷达</span>
-          </span>
-          <span className="beta">BETA</span>
-        </a>
-        <div className="workspace-label">YOUR CREATIVE INTELLIGENCE</div>
-        <nav className="main-nav" aria-label="主要导航">
-          {NAV.map((n) => (
-            <button
-              key={n.id}
-              onClick={() => navigate(n.id)}
-              className={view === n.id ? "active" : ""}
-              aria-current={view === n.id ? "page" : undefined}
-            >
-              <n.icon size={18} />
-              <span>{n.label}</span>
-              {n.id === "saved" && saved.length > 0 && (
-                <small>{saved.length}</small>
-              )}
-              {view === n.id && <i />}
-            </button>
-          ))}
-        </nav>
-        <div className="nav-caption">
-          创作领域<span>06</span>
-        </div>
-        <nav className="domain-nav" aria-label="创作分类">
-          {CATEGORIES.map((c, i) => {
-            const Icon = ICONS[i];
-            return (
+      <div className="app-main" inert={modalOpen}>
+        <header className="site-header">
+          <a className="simple-brand" href="/" aria-label="AI 创作雷达首页">
+            <Radio size={23} />
+            <span>AI 创作雷达</span>
+          </a>
+          <nav className="simple-nav" aria-label="主要导航">
+            {NAV.map((n) => (
               <button
-                key={c}
-                className={category === c ? "chosen" : ""}
-                onClick={() => {
-                  setCategory(c);
-                  navigate("discover");
-                }}
+                key={n.id}
+                onClick={() => navigate(n.id)}
+                className={view === n.id ? "active" : ""}
+                aria-current={view === n.id ? "page" : undefined}
               >
-                <Icon size={16} />
-                <span>{c}</span>
-                <small>
-                  {visible.filter((x) => x.category === c).length || "—"}
-                </small>
+                {n.label}
+                {n.id === "saved" && saved.length > 0 && (
+                  <small>{saved.length}</small>
+                )}
               </button>
-            );
-          })}
-        </nav>
-        <div className="sidebar-note">
-          <i />
-          <div>
-            <b>让创作跟上变化</b>
-            <p>少一点噪音，多一条有用线索。</p>
-          </div>
-        </div>
-        <div className="sidebar-bottom">
-          <button
-            className={view === "desk" ? "active" : ""}
-            onClick={() => navigate("desk")}
-          >
-            <Settings2 size={17} />
-            采集工作台
-            <ChevronRight size={15} />
-          </button>
-          <button
-            onClick={() => {
-              setMenu(false);
-              setAbout(true);
-            }}
-          >
-            <CircleHelp size={17} />
-            关于雷达
-          </button>
-          <div className="owner">
-            <div className="avatar">Y</div>
-            <span>
-              Yasupo<small>AI CREATIVE HUB</small>
-            </span>
-            <i />
-          </div>
-        </div>
-      </aside>
-      <div className="app-main" inert={modalOpen || menu}>
-        <header className="topbar">
-          <div className="breadcrumb">
-            <button
-              className="mobile-menu icon-button"
-              ref={menuTriggerRef}
-              aria-label="展开导航"
-              aria-expanded={menu}
-              aria-controls="radar-navigation"
-              onClick={() => setMenu(!menu)}
-            >
-              <Menu size={20} />
-            </button>
-            <Globe2 size={15} />
-            <span>创作情报</span>
-            <ChevronRight size={13} />
-            <b>{LABELS[view]}</b>
-          </div>
-          <div className="header-right">
-            <span className="system-state">
-              <i className={data.collectorRunning ? "pulsing" : ""} />
-              {data.collectorRunning
-                ? "采集中"
-                : data.storage === "snapshot"
-                  ? "数据快照"
-                  : "本地资料库"}
-            </span>
-            <button
-              className="icon-button"
-              aria-label="刷新资料"
-              onClick={() => {
-                void refresh();
-                setToast("正在刷新资料");
-              }}
-            >
-              <RefreshCw size={16} />
-            </button>
-            <div className="avatar mini">Y</div>
-          </div>
+            ))}
+            <details className="more-menu" ref={moreRef}>
+              <summary>
+                更多 <ChevronDown size={13} />
+              </summary>
+              <div>
+                <button onClick={() => navigate("trends")}>
+                  <Flame size={16} />
+                  热点追踪
+                </button>
+                <button onClick={() => navigate("desk")}>
+                  <Settings2 size={16} />
+                  采集工作台
+                </button>
+                <button
+                  onClick={() => {
+                    if (moreRef.current) moreRef.current.open = false;
+                    moreRef.current?.querySelector("summary")?.focus();
+                    setAbout(true);
+                  }}
+                >
+                  <CircleHelp size={16} />
+                  关于雷达
+                </button>
+                <button
+                  onClick={() => {
+                    if (moreRef.current) moreRef.current.open = false;
+                    void refresh();
+                    setToast("正在刷新资料");
+                  }}
+                >
+                  <RefreshCw size={16} />
+                  刷新资料
+                </button>
+                <a href="/api/export">
+                  <ArrowDownToLine size={16} />
+                  导出资料
+                </a>
+              </div>
+            </details>
+          </nav>
         </header>
         <main id="radar-main" tabIndex={-1} className="main-wrap">
-          <section
-            className={`page-intro ${view === "discover" ? "editorial-intro" : ""}`}
-          >
+          <section className="page-intro">
             <div>
-              <div className="eyebrow">
-                <i />
-                AI CREATIVE SIGNALS
-                <span />
-              </div>
-              <h1>
-                {view === "discover" ? (
-                  <>
-                    看见 AI 的变化，
-                    <br />
-                    找到创作的下一步
-                  </>
-                ) : (
-                  LABELS[view]
-                )}
-                <span>.</span>
-              </h1>
+              <h1>{view === "discover" ? "AI 创作资料库" : LABELS[view]}</h1>
               <p>
                 {view === "discover"
-                  ? "作品、工具与方法，从四个平台的创作现场，收进你的灵感资料库。"
-                  : view === "trends"
-                    ? "把同一事件的独立讨论放在一起，看清热度从哪里来。"
-                    : view === "brief"
-                      ? "把今天读到的线索，整理成下一次创作的起点。"
-                      : view === "saved"
-                        ? "把值得反复看的线索，留在自己的创作资料夹。"
-                        : "维护采集关键词、核对渠道状态，让每一条资料都有出处。"}
+                  ? "搜作品、找工具、看教程。"
+                  : view === "saved"
+                    ? "值得留住的内容，都在这里。"
+                    : view === "trends"
+                      ? "有来源的独立讨论，汇成事件线索。"
+                      : view === "brief"
+                        ? "按日期回看当天的创作线索。"
+                        : "管理平台、关键词与采集记录。"}
               </p>
             </div>
-            {view === "discover" ? (
-              <div
-                className="edition-art"
-                aria-label={`${visible.length}条公开资料，覆盖${new Set(visible.map((item) => item.platform)).size}个平台`}
-              >
-                <span className="edition-caption">
-                  THE CREATOR’S OBSERVATORY
-                </span>
-                <div className="radar-drawing" aria-hidden="true">
-                  <i />
-                  <i />
-                  <i />
-                  <span>Y.</span>
-                  <b />
-                </div>
-                <div className="edition-count">
-                  <strong>{String(visible.length).padStart(2, "0")}</strong>
-                  <span>
-                    条创作线索
-                    <br />
-                    <b>
-                      {new Set(visible.map((item) => item.platform)).size}{" "}
-                      个平台 · {CATEGORIES.length} 个领域
-                    </b>
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <button
-                className="secondary-button intro-date"
-                onClick={() => navigate("brief")}
-              >
-                <CalendarDays size={15} />
-                {new Intl.DateTimeFormat("zh-CN", {
-                  timeZone: "Asia/Shanghai",
-                  month: "long",
-                  day: "numeric",
-                  weekday: "short",
-                }).format(new Date())}
-                <ChevronDown size={13} />
-              </button>
-            )}
           </section>
-          <div className="coverage-strip">
-            <span>
-              <ShieldCheck size={14} />
-              每条资料可追溯
-            </span>
-            <span>
-              更新于{" "}
-              {data.state.updatedAt
-                ? time(data.state.updatedAt, true)
-                : "尚未采集"}
-            </span>
-            <span className="strip-end">
-              {data.model === "rules" ? "规则筛选" : "双模型评分"}
-              <i />
-              {visible.length} 条已收录
-            </span>
-          </div>
           {(view === "discover" || view === "saved") && (
             <>
-              <section className="platform-grid" aria-label="平台筛选">
-                <button
-                  onClick={() => setPlatform("all")}
-                  className={platform === "all" ? "selected" : ""}
-                  aria-pressed={platform === "all"}
-                >
-                  <span className="all-grid">
-                    <LayoutGrid size={19} />
-                  </span>
-                  <span>
-                    <b>全部平台</b>
-                    <small>ALL SIGNALS</small>
-                  </span>
-                  <strong>{visible.length}</strong>
-                </button>
-                {PLATFORMS.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPlatform(p)}
-                    className={platform === p ? "selected" : ""}
-                    aria-pressed={platform === p}
-                  >
-                    <PlatformMark platform={p} />
-                    <span>
-                      <b>{PLATFORM_LABELS[p]}</b>
-                      <small>
-                        {p === "douyin"
-                          ? "短视频创作"
-                          : p === "xiaohongshu"
-                            ? "灵感与实操"
-                            : p === "youtube"
-                              ? "长视频与教程"
-                              : "全球新鲜事"}
-                      </small>
-                    </span>
-                    <strong>
-                      {visible.filter((i) => i.platform === p).length}
-                      <ArrowUpRight size={12} />
-                    </strong>
-                  </button>
-                ))}
-              </section>
-              <div className="content-columns">
-                <section className="feed-column">
-                  <div className="feed-toolbar">
-                    <div className="feed-tabs">
-                      {[
-                        { id: "selected", label: "精选资料" },
-                        { id: "latest", label: "最新动态" },
-                        { id: "archive", label: "资料归档" },
-                      ].map((t) => (
-                        <button
-                          key={t.id}
-                          onClick={() => setTab(t.id)}
-                          className={tab === t.id ? "active" : ""}
-                          aria-pressed={tab === t.id}
-                        >
-                          {t.id === "selected" && <Sparkles size={14} />}{" "}
-                          {t.label}
-                          {t.id === "selected" && <span>CURATED</span>}
-                        </button>
-                      ))}
-                    </div>
-                    <span
-                      className="result-count"
-                      role="status"
-                      aria-live="polite"
-                    >
-                      {filtered.length} 条结果
-                    </span>
-                  </div>
-                  <div className="search-controls">
-                    <label className="search-box">
-                      <Search size={17} />
-                      <input
-                        ref={searchRef}
-                        value={q}
-                        onChange={(e) => setQ(e.target.value)}
-                        placeholder="搜索工具、作品、创作者或关键词…"
-                        aria-label="搜索资料"
-                      />
-                      {q ? (
-                        <button onClick={() => setQ("")} aria-label="清除搜索">
-                          <CloseIcon size={15} />
-                        </button>
-                      ) : (
-                        <kbd>Ctrl / ⌘ K</kbd>
-                      )}
-                    </label>
-                    <label className="time-select">
-                      <ListFilter size={15} />
-                      <select
-                        value={days}
-                        onChange={(e) => setDays(e.target.value)}
-                        aria-label="时间范围"
-                      >
-                        <option value="all">全部时间</option>
-                        <option value="1">近 24 小时</option>
-                        <option value="7">近 7 天</option>
-                        <option value="30">近 30 天</option>
-                      </select>
-                    </label>
-                  </div>
-                  <div className="filter-chips">
-                    <button
-                      className={category === "all" ? "active" : ""}
-                      aria-pressed={category === "all"}
-                      onClick={() => setCategory("all")}
-                    >
-                      全部领域
+              <section className="browse-controls" aria-label="查找资料">
+                <label className="search-box">
+                  <Search size={20} />
+                  <input
+                    ref={searchRef}
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="搜索 AI 短剧、视频、Claude 动画…"
+                    aria-label="搜索资料"
+                  />
+                  {q ? (
+                    <button onClick={() => setQ("")} aria-label="清除搜索">
+                      <CloseIcon size={17} />
                     </button>
-                    {CATEGORIES.map((c) => (
-                      <button
-                        key={c}
-                        className={category === c ? "active" : ""}
-                        aria-pressed={category === c}
-                        onClick={() => setCategory(c)}
-                      >
-                        {c}
-                      </button>
-                    ))}
+                  ) : (
+                    <kbd>Ctrl / ⌘ K</kbd>
+                  )}
+                </label>
+                <div
+                  className="platform-tabs"
+                  role="group"
+                  aria-label="平台筛选"
+                >
+                  <button
+                    onClick={() => setPlatform("all")}
+                    aria-pressed={platform === "all"}
+                    className={platform === "all" ? "selected" : ""}
+                  >
+                    全部
+                  </button>
+                  {PLATFORMS.map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => setPlatform(p)}
+                      aria-pressed={platform === p}
+                      className={platform === p ? "selected" : ""}
+                    >
+                      {PLATFORM_LABELS[p]}
+                    </button>
+                  ))}
+                </div>
+              </section>
+              <section className="feed-column" aria-label="资料列表">
+                <div className="browse-toolbar">
+                  <span
+                    className="result-count"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {filtered.length} 条资料
+                  </span>
+                  <div className="browse-options">
+                    <select
+                      value={tab}
+                      onChange={(e) => setTab(e.target.value)}
+                      aria-label="排序方式"
+                    >
+                      <option value="selected">推荐排序</option>
+                      <option value="latest">最新发布</option>
+                    </select>
+                    <details className="filter-menu" ref={filterRef}>
+                      <summary>
+                        <ListFilter size={15} />
+                        筛选
+                        {(category !== "all" ||
+                          days !== "all" ||
+                          scope !== "all") && <i aria-label="已启用筛选" />}
+                      </summary>
+                      <div className="filter-panel">
+                        <label>
+                          内容类别
+                          <select
+                            value={category}
+                            onChange={(e) =>
+                              setCategory(e.target.value as Category | "all")
+                            }
+                            aria-label="内容类别"
+                          >
+                            <option value="all">全部类别</option>
+                            {CATEGORIES.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          发布时间
+                          <select
+                            value={days}
+                            onChange={(e) => setDays(e.target.value)}
+                            aria-label="时间范围"
+                          >
+                            <option value="all">全部时间</option>
+                            <option value="1">近 24 小时</option>
+                            <option value="7">近 7 天</option>
+                            <option value="30">近 30 天</option>
+                          </select>
+                        </label>
+                        <label>
+                          资料范围
+                          <select
+                            value={scope}
+                            onChange={(e) => setScope(e.target.value)}
+                            aria-label="资料范围"
+                          >
+                            <option value="all">所有已收录</option>
+                            <option value="selected">新采集动态</option>
+                            <option value="archive">历史归档</option>
+                          </select>
+                        </label>
+                        <button
+                          className="filter-done"
+                          onClick={() => {
+                            if (filterRef.current)
+                              filterRef.current.open = false;
+                            filterRef.current
+                              ?.querySelector("summary")
+                              ?.focus();
+                          }}
+                        >
+                          完成筛选 <Check size={14} />
+                        </button>
+                      </div>
+                    </details>
                   </div>
-                  {hasFilters && (
-                    <div className="active-filters">
-                      <span>
-                        正在筛选
-                        {platform !== "all"
-                          ? ` · ${PLATFORM_LABELS[platform]}`
-                          : ""}
-                        {category !== "all" ? ` · ${category}` : ""}
-                        {q.trim() ? ` · “${q.trim()}”` : ""}
-                        {days !== "all" ? ` · 近 ${days} 天` : ""}
-                      </span>
-                      <button onClick={resetFilters}>
-                        清除筛选 <CloseIcon size={13} />
+                </div>
+                {hasFilters && (
+                  <div className="active-filters">
+                    <span>
+                      {platform !== "all"
+                        ? ` · ${PLATFORM_LABELS[platform]}`
+                        : ""}
+                      {category !== "all" ? ` · ${category}` : ""}
+                      {q.trim() ? ` · “${q.trim()}”` : ""}
+                      {days !== "all" ? ` · 近 ${days} 天` : ""}
+                      {scope !== "all"
+                        ? ` · ${scope === "archive" ? "历史归档" : "新采集动态"}`
+                        : ""}
+                    </span>
+                    <button onClick={resetFilters}>
+                      清除筛选 <CloseIcon size={13} />
+                    </button>
+                  </div>
+                )}
+                <div className="feed-list">
+                  {filtered.length ? (
+                    filtered.map(card)
+                  ) : (
+                    <div className="empty-state">
+                      <div>
+                        <Search size={27} />
+                      </div>
+                      <h3>
+                        {view === "saved" && !hasFilters
+                          ? "这里等着你的第一条灵感"
+                          : "暂时没有符合条件的资料"}
+                      </h3>
+                      <p>
+                        {view === "saved" && !hasFilters
+                          ? "点击卡片书签，即可保存在当前浏览器。"
+                          : hasFilters
+                            ? "试试其他关键词、平台或时间范围。"
+                            : "暂无资料，采集后即可在这里浏览。"}
+                      </p>
+                      <button
+                        className="secondary-button"
+                        onClick={() => {
+                          if (hasFilters) resetFilters();
+                          else if (view === "saved") navigate("discover");
+                          else {
+                            setQ("");
+                            setPlatform("all");
+                            setCategory("all");
+                            setDays("all");
+                            setScope("all");
+                            navigate("desk");
+                          }
+                        }}
+                      >
+                        {hasFilters
+                          ? "清除筛选"
+                          : view === "saved"
+                            ? "去浏览资料"
+                            : "查看采集工作台"}
+                        <ArrowRight size={14} />
                       </button>
                     </div>
                   )}
-                  <div className="feed-list">
-                    {filtered.length ? (
-                      filtered.map(card)
-                    ) : (
-                      <div className="empty-state">
-                        <div>
-                          <Search size={27} />
-                        </div>
-                        <h3>
-                          {view === "saved" && !hasFilters
-                            ? "这里等着你的第一条灵感"
-                            : "暂时没有符合条件的资料"}
-                        </h3>
-                        <p>
-                          {view === "saved" && !hasFilters
-                            ? "点击卡片书签，即可保存在当前浏览器。"
-                            : hasFilters
-                              ? "试试其他关键词、平台或时间范围。"
-                              : tab === "selected"
-                                ? "首次导入的资料先归档；未知日期的内容在工作台等待核验。"
-                                : "试试其他关键词、平台或时间范围。"}
-                        </p>
-                        <button
-                          className="secondary-button"
-                          onClick={() => {
-                            if (hasFilters) resetFilters();
-                            else if (view === "saved") navigate("discover");
-                            else {
-                              setQ("");
-                              setPlatform("all");
-                              setCategory("all");
-                              setDays("all");
-                              setTab("archive");
-                            }
-                          }}
-                        >
-                          {hasFilters
-                            ? "清除筛选"
-                            : view === "saved"
-                              ? "去发现灵感"
-                              : "查看资料归档"}
-                          <ArrowRight size={14} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  <div className="feed-end">
-                    <span />
-                    保持好奇，下一条线索正在路上
-                    <span />
-                  </div>
-                </section>
-                <aside className="right-rail">
-                  <section className="brief-teaser">
-                    <div className="rail-eyebrow">
-                      <FileText size={14} />
-                      THE DAILY BRIEF
-                      <span>NO. {today().slice(5).replace("-", "")}</span>
-                    </div>
-                    <h2>
-                      今天，AI 创作
-                      <br />
-                      有哪些新动向<span>？</span>
-                    </h2>
-                    <p>
-                      {data.brief.total
-                        ? `已整理 ${data.brief.total} 条当日线索，来自 ${data.brief.platforms} 个平台。`
-                        : "当日新内容到达后，在这里汇成一份有来源的创作摘要。"}
-                    </p>
-                    <div className="brief-lines" aria-hidden>
-                      <i />
-                      <i />
-                      <i />
-                      <span>
-                        <Sparkles size={18} />
-                      </span>
-                    </div>
-                    <button onClick={() => navigate("brief")}>
-                      阅读创作日报
-                      <ArrowUpRight size={17} />
-                    </button>
-                  </section>
-                  <section className="rail-section">
-                    <div className="rail-title">
-                      <h3>
-                        <TrendingUp size={16} />
-                        话题索引
-                      </h3>
-                      <span>已收录资料</span>
-                    </div>
-                    {topics.length ? (
-                      <div className="topic-list">
-                        {topics.map(([name, count], i) => (
-                          <button
-                            key={name}
-                            onClick={() => {
-                              setQ(name);
-                              setTab("archive");
-                            }}
-                          >
-                            <span className={i < 3 ? "topic-top" : ""}>
-                              {String(i + 1).padStart(2, "0")}
-                            </span>
-                            <b>{name}</b>
-                            <small>{count} 条</small>
-                            <ArrowUpRight size={13} />
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="rail-muted">实际资料入库后生成话题索引。</p>
-                    )}
-                  </section>
-                  <section className="rail-section">
-                    <div className="rail-title">
-                      <h3>
-                        <Radio size={16} />
-                        采集覆盖
-                      </h3>
-                      <button
-                        className="icon-button"
-                        aria-label="打开采集工作台"
-                        onClick={() => navigate("desk")}
-                      >
-                        <ArrowUpRight size={15} />
-                      </button>
-                    </div>
-                    <div className="coverage-list">
-                      {data.state.sources.map((s) => (
-                        <div key={s.platform}>
-                          <PlatformMark platform={s.platform} small />
-                          <span>{s.name}</span>
-                          <small className={`status-${s.state}`}>
-                            <i />
-                            {STATUS[s.state]}
-                          </small>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="rail-muted">
-                      关键词抽样 · 非平台全量
-                      <br />
-                      未读取的数据不作推断
-                    </p>
-                  </section>
-                  <a className="source-export" href="/api/export">
-                    <Database size={16} />
-                    <span>
-                      带来源的资料库<small>导出 JSON，继续你的研究</small>
-                    </span>
-                    <ArrowDownToLine size={16} />
-                  </a>
-                </aside>
-              </div>
+                </div>
+                <p className="data-note">
+                  {data.storage === "snapshot" ? "资料快照" : "资料库"} ·{" "}
+                  {data.state.updatedAt
+                    ? `更新于 ${time(data.state.updatedAt, true)}`
+                    : "尚未采集"}
+                </p>
+              </section>
             </>
           )}
           {view === "trends" && (
