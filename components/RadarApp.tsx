@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { readingExcerpt } from "@/lib/presentation";
 import {
   ArrowDownToLine,
   ArrowRight,
@@ -146,11 +147,18 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   const [about, setAbout] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
+  const navigationRef = useRef<HTMLElement>(null);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
+  const modalOpen = Boolean(detail || about || edit);
   const currentDay = useRef(day);
   currentDay.current = day;
   useEffect(() => {
     try {
-      setSaved(JSON.parse(localStorage.getItem("yasupo-saved") || "[]"));
+      const stored: unknown = JSON.parse(
+        localStorage.getItem("yasupo-saved") || "[]",
+      );
+      if (Array.isArray(stored))
+        setSaved(stored.filter((id): id is string => typeof id === "string"));
     } catch {}
     const v = new URLSearchParams(location.search).get("view");
     if (v && v in LABELS) setView(v as View);
@@ -179,10 +187,12 @@ export default function RadarApp({ initial }: { initial: Overview }) {
         setDetail(null);
         setAbout(false);
         setEdit(null);
+        setMenu(false);
       }
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        searchRef.current?.focus();
+        if (!document.querySelector('[role="dialog"]'))
+          searchRef.current?.focus();
       }
     };
     window.addEventListener("keydown", handle);
@@ -195,8 +205,62 @@ export default function RadarApp({ initial }: { initial: Overview }) {
     }
   }, [toast]);
   useEffect(() => {
-    if (detail || about || edit) dialogRef.current?.focus();
-  }, [detail, about, edit]);
+    if (!modalOpen && !menu) return;
+    const previous =
+      menu && !modalOpen
+        ? menuTriggerRef.current
+        : document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const panel = modalOpen ? dialogRef.current : navigationRef.current;
+    if (modalOpen) panel?.focus();
+    else panel?.querySelector<HTMLButtonElement>(".nav-close")?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const dialog = panel;
+      const nodes = dialog?.querySelectorAll<HTMLElement>(
+        'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]',
+      );
+      const focusable = Array.from(nodes || []).filter(
+        (node) => node.getClientRects().length > 0,
+      );
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) {
+        event.preventDefault();
+        return;
+      }
+      if (
+        event.shiftKey &&
+        (document.activeElement === first || document.activeElement === dialog)
+      ) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        (document.activeElement === last || document.activeElement === dialog)
+      ) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => {
+      document.removeEventListener("keydown", trap);
+      document.body.style.overflow = overflow;
+      previous?.focus();
+    };
+  }, [modalOpen, menu]);
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 801px)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) setMenu(false);
+    };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
   const navigate = (next: View) => {
     setView(next);
     setMenu(false);
@@ -212,7 +276,12 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       ? saved.filter((x) => x !== id)
       : [...saved, id];
     setSaved(next);
-    localStorage.setItem("yasupo-saved", JSON.stringify(next));
+    try {
+      localStorage.setItem("yasupo-saved", JSON.stringify(next));
+    } catch {
+      setToast("浏览器无法保存收藏，本次仅在当前页面保留");
+      return;
+    }
     setToast(next.includes(id) ? "已加入本机收藏" : "已取消收藏");
   };
   const action = async (path: string, body?: unknown) => {
@@ -245,6 +314,15 @@ export default function RadarApp({ initial }: { initial: Overview }) {
     [data],
   );
   const pending = data.state.items.filter((i) => i.status === "pending");
+  const hasFilters = Boolean(
+    q.trim() || platform !== "all" || category !== "all" || days !== "all",
+  );
+  const resetFilters = () => {
+    setQ("");
+    setPlatform("all");
+    setCategory("all");
+    setDays("all");
+  };
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const cutoff = Date.now() - Number(days) * 86400000;
@@ -293,6 +371,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   }, [visible]);
   const card = (item: Item, index: number) => {
     const Icon = ICONS[CATEGORIES.indexOf(item.category)];
+    const excerpt = readingExcerpt(item);
     return (
       <article className="signal-card" key={item.id}>
         <div className="signal-meta">
@@ -317,10 +396,12 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               <span className="category-chip">{item.category}</span>
               {item.status === "archive" && <span>归档</span>}
             </div>
-            <button className="card-title" onClick={() => setDetail(item)}>
-              {item.title}
-            </button>
-            <p>{item.summary}</p>
+            <h2 className="signal-heading">
+              <button className="card-title" onClick={() => setDetail(item)}>
+                {excerpt.title}
+              </button>
+            </h2>
+            {excerpt.summary && <p>{excerpt.summary}</p>}
             <div className="tag-row">
               {item.tags.slice(0, 3).map((t) => (
                 <button key={t} onClick={() => setQ(t)}>
@@ -353,6 +434,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               className={`icon-button ${saved.includes(item.id) ? "is-saved" : ""}`}
               onClick={() => favorite(item.id)}
               aria-label={`${saved.includes(item.id) ? "取消收藏" : "收藏"} ${item.title}`}
+              aria-pressed={saved.includes(item.id)}
             >
               <Bookmark
                 size={16}
@@ -374,7 +456,29 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   };
   return (
     <div className="app-shell">
-      <aside className={`sidebar ${menu ? "mobile-open" : ""}`}>
+      <a className="skip-link" href="#radar-main">
+        跳至主要内容
+      </a>
+      {menu && (
+        <button
+          className="nav-backdrop"
+          aria-label="关闭导航"
+          onClick={() => setMenu(false)}
+        />
+      )}
+      <aside
+        id="radar-navigation"
+        ref={navigationRef}
+        inert={modalOpen}
+        className={`sidebar ${menu ? "mobile-open" : ""}`}
+      >
+        <button
+          className="nav-close icon-button"
+          aria-label="收起导航"
+          onClick={() => setMenu(false)}
+        >
+          <CloseIcon size={20} />
+        </button>
         <a className="brand" href="/">
           <span className="brand-logo">
             <Radio size={24} />
@@ -391,6 +495,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               key={n.id}
               onClick={() => navigate(n.id)}
               className={view === n.id ? "active" : ""}
+              aria-current={view === n.id ? "page" : undefined}
             >
               <n.icon size={18} />
               <span>{n.label}</span>
@@ -441,7 +546,12 @@ export default function RadarApp({ initial }: { initial: Overview }) {
             采集工作台
             <ChevronRight size={15} />
           </button>
-          <button onClick={() => setAbout(true)}>
+          <button
+            onClick={() => {
+              setMenu(false);
+              setAbout(true);
+            }}
+          >
             <CircleHelp size={17} />
             关于雷达
           </button>
@@ -454,12 +564,15 @@ export default function RadarApp({ initial }: { initial: Overview }) {
           </div>
         </div>
       </aside>
-      <div className="app-main">
+      <div className="app-main" inert={modalOpen || menu}>
         <header className="topbar">
           <div className="breadcrumb">
             <button
               className="mobile-menu icon-button"
+              ref={menuTriggerRef}
               aria-label="展开导航"
+              aria-expanded={menu}
+              aria-controls="radar-navigation"
               onClick={() => setMenu(!menu)}
             >
               <Menu size={20} />
@@ -491,8 +604,10 @@ export default function RadarApp({ initial }: { initial: Overview }) {
             <div className="avatar mini">Y</div>
           </div>
         </header>
-        <main className="main-wrap">
-          <section className="page-intro">
+        <main id="radar-main" tabIndex={-1} className="main-wrap">
+          <section
+            className={`page-intro ${view === "discover" ? "editorial-intro" : ""}`}
+          >
             <div>
               <div className="eyebrow">
                 <i />
@@ -500,14 +615,20 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 <span />
               </div>
               <h1>
-                {view === "discover"
-                  ? "捕捉变化，发现下一次创作"
-                  : LABELS[view]}
+                {view === "discover" ? (
+                  <>
+                    看见 AI 的变化，
+                    <br />
+                    找到创作的下一步
+                  </>
+                ) : (
+                  LABELS[view]
+                )}
                 <span>.</span>
               </h1>
               <p>
                 {view === "discover"
-                  ? "从四个平台的创作现场，找到值得关注的工具、作品与新玩法。"
+                  ? "作品、工具与方法，从四个平台的创作现场，收进你的灵感资料库。"
                   : view === "trends"
                     ? "把同一事件的独立讨论放在一起，看清热度从哪里来。"
                     : view === "brief"
@@ -517,19 +638,48 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                         : "维护采集关键词、核对渠道状态，让每一条资料都有出处。"}
               </p>
             </div>
-            <button
-              className="secondary-button intro-date"
-              onClick={() => navigate("brief")}
-            >
-              <CalendarDays size={15} />
-              {new Intl.DateTimeFormat("zh-CN", {
-                timeZone: "Asia/Shanghai",
-                month: "long",
-                day: "numeric",
-                weekday: "short",
-              }).format(new Date())}
-              <ChevronDown size={13} />
-            </button>
+            {view === "discover" ? (
+              <div
+                className="edition-art"
+                aria-label={`${visible.length}条公开资料，覆盖${new Set(visible.map((item) => item.platform)).size}个平台`}
+              >
+                <span className="edition-caption">
+                  THE CREATOR’S OBSERVATORY
+                </span>
+                <div className="radar-drawing" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                  <span>Y.</span>
+                  <b />
+                </div>
+                <div className="edition-count">
+                  <strong>{String(visible.length).padStart(2, "0")}</strong>
+                  <span>
+                    条创作线索
+                    <br />
+                    <b>
+                      {new Set(visible.map((item) => item.platform)).size}{" "}
+                      个平台 · {CATEGORIES.length} 个领域
+                    </b>
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <button
+                className="secondary-button intro-date"
+                onClick={() => navigate("brief")}
+              >
+                <CalendarDays size={15} />
+                {new Intl.DateTimeFormat("zh-CN", {
+                  timeZone: "Asia/Shanghai",
+                  month: "long",
+                  day: "numeric",
+                  weekday: "short",
+                }).format(new Date())}
+                <ChevronDown size={13} />
+              </button>
+            )}
           </section>
           <div className="coverage-strip">
             <span>
@@ -554,6 +704,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 <button
                   onClick={() => setPlatform("all")}
                   className={platform === "all" ? "selected" : ""}
+                  aria-pressed={platform === "all"}
                 >
                   <span className="all-grid">
                     <LayoutGrid size={19} />
@@ -569,6 +720,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                     key={p}
                     onClick={() => setPlatform(p)}
                     className={platform === p ? "selected" : ""}
+                    aria-pressed={platform === p}
                   >
                     <PlatformMark platform={p} />
                     <span>
@@ -595,7 +747,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   <div className="feed-toolbar">
                     <div className="feed-tabs">
                       {[
-                        { id: "selected", label: "为你精选" },
+                        { id: "selected", label: "精选资料" },
                         { id: "latest", label: "最新动态" },
                         { id: "archive", label: "资料归档" },
                       ].map((t) => (
@@ -603,14 +755,21 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                           key={t.id}
                           onClick={() => setTab(t.id)}
                           className={tab === t.id ? "active" : ""}
+                          aria-pressed={tab === t.id}
                         >
                           {t.id === "selected" && <Sparkles size={14} />}{" "}
                           {t.label}
-                          {t.id === "selected" && <span>FOR YOU</span>}
+                          {t.id === "selected" && <span>CURATED</span>}
                         </button>
                       ))}
                     </div>
-                    <span className="result-count">{filtered.length} 条</span>
+                    <span
+                      className="result-count"
+                      role="status"
+                      aria-live="polite"
+                    >
+                      {filtered.length} 条结果
+                    </span>
                   </div>
                   <div className="search-controls">
                     <label className="search-box">
@@ -627,7 +786,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                           <CloseIcon size={15} />
                         </button>
                       ) : (
-                        <kbd>⌘ K</kbd>
+                        <kbd>Ctrl / ⌘ K</kbd>
                       )}
                     </label>
                     <label className="time-select">
@@ -647,6 +806,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   <div className="filter-chips">
                     <button
                       className={category === "all" ? "active" : ""}
+                      aria-pressed={category === "all"}
                       onClick={() => setCategory("all")}
                     >
                       全部领域
@@ -655,12 +815,29 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                       <button
                         key={c}
                         className={category === c ? "active" : ""}
+                        aria-pressed={category === c}
                         onClick={() => setCategory(c)}
                       >
                         {c}
                       </button>
                     ))}
                   </div>
+                  {hasFilters && (
+                    <div className="active-filters">
+                      <span>
+                        正在筛选
+                        {platform !== "all"
+                          ? ` · ${PLATFORM_LABELS[platform]}`
+                          : ""}
+                        {category !== "all" ? ` · ${category}` : ""}
+                        {q.trim() ? ` · “${q.trim()}”` : ""}
+                        {days !== "all" ? ` · 近 ${days} 天` : ""}
+                      </span>
+                      <button onClick={resetFilters}>
+                        清除筛选 <CloseIcon size={13} />
+                      </button>
+                    </div>
+                  )}
                   <div className="feed-list">
                     {filtered.length ? (
                       filtered.map(card)
@@ -670,21 +847,24 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                           <Search size={27} />
                         </div>
                         <h3>
-                          {view === "saved"
+                          {view === "saved" && !hasFilters
                             ? "这里等着你的第一条灵感"
                             : "暂时没有符合条件的资料"}
                         </h3>
                         <p>
-                          {view === "saved"
+                          {view === "saved" && !hasFilters
                             ? "点击卡片书签，即可保存在当前浏览器。"
-                            : tab === "selected"
-                              ? "首次导入的资料先归档；未知日期的内容在工作台等待核验。"
-                              : "试试其他关键词、平台或时间范围。"}
+                            : hasFilters
+                              ? "试试其他关键词、平台或时间范围。"
+                              : tab === "selected"
+                                ? "首次导入的资料先归档；未知日期的内容在工作台等待核验。"
+                                : "试试其他关键词、平台或时间范围。"}
                         </p>
                         <button
                           className="secondary-button"
                           onClick={() => {
-                            if (view === "saved") navigate("discover");
+                            if (hasFilters) resetFilters();
+                            else if (view === "saved") navigate("discover");
                             else {
                               setQ("");
                               setPlatform("all");
@@ -694,7 +874,11 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                             }
                           }}
                         >
-                          {view === "saved" ? "去发现灵感" : "查看资料归档"}
+                          {hasFilters
+                            ? "清除筛选"
+                            : view === "saved"
+                              ? "去发现灵感"
+                              : "查看资料归档"}
                           <ArrowRight size={14} />
                         </button>
                       </div>

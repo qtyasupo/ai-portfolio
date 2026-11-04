@@ -1,13 +1,16 @@
 :root {
-  --bg: #f7f7f3;
+  --bg: #f5f2eb;
   --paper: #fff;
-  --ink: #293027;
-  --muted: #7d8775;
-  --line: #e6e9df;
-  --red: #d45340;
-  --red-wash: #fbefeb;
+  --ink: #243a32;
+  --muted: #5e6c62;
+  --line: #dddcd1;
+  --red: #b54530;
+  --red-wash: #f5e8df;
   --sidebar: 238px;
-  --font: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font:
+    "Candara", "Trebuchet MS", "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+  --display: "Georgia", "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
 }
 * {
   box-sizing: border-box;
