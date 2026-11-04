@@ -1,4 +1,5 @@
 import { validateTopicBasis } from "./topic-basis";
+import topicResearch from "../data/platform-topic-research-2026-11-04.json";
 import {
   NEWS_CATEGORIES,
   PLATFORM_LABELS,
@@ -96,6 +97,21 @@ export function defaultTracking(): TrackingConfig {
     })),
     telegram: { status: "placeholder", channels: [] },
   };
+}
+// Public page defaults contain only portable research, never the private roster.
+export function publishedTracking(): TrackingConfig {
+  const defaults = defaultTracking();
+  return validateTracking({
+    ...defaults,
+    accounts: [],
+    topics: [
+      ...topicResearch.topics,
+      ...defaults.topics.map((topic) => ({
+        ...topic,
+        platforms: topic.platforms.filter((p) => p === "x" || p === "youtube"),
+      })),
+    ],
+  });
 }
 export function itemStream(item: Pick<Item, "stream" | "category">): Stream {
   return (

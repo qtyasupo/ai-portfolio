@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import {
   defaultTracking,
+  publishedTracking,
   formatTopicDraft,
   parseTopicDraft,
   validateTracking,
@@ -14,6 +15,14 @@ const research = JSON.parse(
   ),
 ) as { topics: WatchTopic[] };
 describe("platform-specific researched topics", () => {
+  it("shows researched topics in public previews without a private Following roster", () => {
+    const config = publishedTracking();
+    expect(config.accounts).toEqual([]);
+    expect(config.topics.filter((t) => t.basis)).toHaveLength(6);
+    expect(config.topics.filter((t) => t.platforms.includes("douyin"))).toHaveLength(3);
+    expect(config.topics.filter((t) => t.platforms.includes("xiaohongshu"))).toHaveLength(3);
+    expect(JSON.stringify(config)).not.toContain("xsec_token");
+  });
   it("keeps portable research free of note access tokens and rejects unrelated access URLs", () => {
     expect(JSON.stringify(research)).not.toContain("xsec_token");
     const t = structuredClone(research.topics[0]);

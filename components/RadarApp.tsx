@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TrackingBoard from "./TrackingBoard";
-import { defaultTracking, itemStream } from "@/lib/tracking";
+import { publishedTracking, itemStream } from "@/lib/tracking";
 import { readingExcerpt } from "@/lib/presentation";
 import {
   ArrowDownToLine,
@@ -146,7 +146,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   const modalOpen = Boolean(detail || about || edit);
   const stream = view === "discover" ? "news" : "creation";
   const tracking = useMemo(
-    () => data.state.tracking || defaultTracking(),
+    () => data.state.tracking || publishedTracking(),
     [data.state.tracking],
   );
   const currentDay = useRef(day);
