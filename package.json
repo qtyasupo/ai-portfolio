@@ -12,7 +12,9 @@
     "ingest": "node --env-file-if-exists=.env.local --import tsx scripts/ingest.ts",
     "snapshot": "node --env-file-if-exists=.env.local --import tsx scripts/export.ts",
     "collect": "python -X utf8 scripts/collect.py",
-    "collector": "python -X utf8 scripts/collect.py --watch"
+    "collector": "python -X utf8 scripts/collect.py --watch",
+    "news:once": "python -X utf8 scripts/collect-news.py",
+    "news:watch": "python -X utf8 scripts/collect-news.py --watch"
   },
   "dependencies": {
     "@libsql/client": "0.18.0",

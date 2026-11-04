@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   if (url.searchParams.get("format") === "brief") {
     const b = data.brief;
     const text =
-      `# Yasupo AI 创作日报 · ${b.date}\n\n关键词抽样，非平台全量。${b.total} 条当日内容，${b.platforms} 个平台。当前筛选方式：${data.model === "rules" ? "规则筛选" : "双模型评分"}。\n\n` +
+      `# Yasupo AI / AIGC 日报 · ${b.date}\n\n关键词抽样，非平台全量。${b.total} 条当日内容，${b.platforms} 个平台。当前筛选方式：${data.model === "rules" ? "规则筛选" : "双模型评分"}。\n\n` +
       b.entries
         .map(
           (i) =>

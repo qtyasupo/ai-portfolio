@@ -13,7 +13,19 @@ await writeFile(
 );
 await writeFile(
   path.join(process.cwd(), ".radar", "collector-config.json"),
-  JSON.stringify(state.sources),
+  JSON.stringify(
+    state.sources.map((source) => {
+      const queries = state.tracking?.topics
+        .filter(
+          (t) =>
+            t.enabled && t.confirmed && t.platforms.includes(source.platform),
+        )
+        .map((t) => t.query);
+      return queries?.length
+        ? { ...source, queries: [...new Set(queries)].slice(0, 20) }
+        : source;
+    }),
+  ),
   "utf8",
 );
 console.log(

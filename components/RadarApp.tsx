@@ -1,5 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import TrackingBoard from "./TrackingBoard";
+import { defaultTracking, itemStream } from "@/lib/tracking";
 import { readingExcerpt } from "@/lib/presentation";
 import {
   ArrowDownToLine,
@@ -30,6 +32,8 @@ import {
 } from "lucide-react";
 import {
   CATEGORIES,
+  NEWS_CATEGORIES,
+  CREATION_CATEGORIES,
   PLATFORMS,
   PLATFORM_LABELS,
   type Category,
@@ -39,16 +43,16 @@ import {
   type Source,
 } from "@/lib/types";
 
-type View = "discover" | "trends" | "brief" | "saved" | "desk";
+type View = "creation" | "discover" | "trends" | "brief" | "saved" | "desk";
 const NAV = [
-  { id: "discover" as const, label: "浏览资料" },
-  { id: "saved" as const, label: "我的收藏" },
-  { id: "brief" as const, label: "创作日报" },
+  { id: "discover" as const, label: "AI 雷达热点实时追踪" },
+  { id: "creation" as const, label: "AIGC 创作热点话题" },
 ];
 const LABELS: Record<View, string> = {
-  discover: "浏览资料",
+  discover: "AI 雷达热点实时追踪",
+  creation: "AIGC 创作热点话题",
   trends: "热点追踪",
-  brief: "创作日报",
+  brief: "AI / AIGC 日报",
   saved: "我的收藏",
   desk: "采集工作台",
 };
@@ -116,10 +120,12 @@ function today() {
 export default function RadarApp({ initial }: { initial: Overview }) {
   const [data, setData] = useState(initial);
   const [view, setView] = useState<View>("discover");
-  const [platform, setPlatform] = useState<Platform | "all">("all");
+  const [platform, setPlatform] = useState<Platform | "all" | "telegram">(
+    "all",
+  );
   const [category, setCategory] = useState<Category | "all">("all");
   const [q, setQ] = useState("");
-  const [tab, setTab] = useState("selected");
+  const [tab, setTab] = useState("latest");
   const [days, setDays] = useState("all");
   const [saved, setSaved] = useState<string[]>([]);
   const [detail, setDetail] = useState<Item | null>(null);
@@ -138,6 +144,11 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   const moreRef = useRef<HTMLDetailsElement>(null);
   const filterRef = useRef<HTMLDetailsElement>(null);
   const modalOpen = Boolean(detail || about || edit);
+  const stream = view === "discover" ? "news" : "creation";
+  const tracking = useMemo(
+    () => data.state.tracking || defaultTracking(),
+    [data.state.tracking],
+  );
   const currentDay = useRef(day);
   currentDay.current = day;
   useEffect(() => {
@@ -254,6 +265,14 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   }, []);
   const navigate = (next: View) => {
     setView(next);
+    if (next === "discover" || next === "creation") {
+      setPlatform("all");
+      setCategory("all");
+      setQ("");
+      setScope("all");
+      setDays(next === "discover" ? "all" : "7");
+      setTab(next === "discover" ? "latest" : "popular");
+    }
     if (moreRef.current) moreRef.current.open = false;
     window.scrollTo({ top: 0, behavior: "instant" });
     history.replaceState(
@@ -326,28 +345,38 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       .filter((i) => {
         if (!["selected", "archive"].includes(i.status)) return false;
         if (view === "saved" && !saved.includes(i.id)) return false;
+        if (view !== "saved" && itemStream(i) !== stream) return false;
         if (scope === "archive" && i.status !== "archive") return false;
         if (scope === "selected" && i.status !== "selected") return false;
         return (
           (platform === "all" || i.platform === platform) &&
           (category === "all" || i.category === category) &&
           (!needle ||
-            `${i.title} ${i.text} ${i.author} ${i.tags.join(" ")}`
-              .toLowerCase()
-              .includes(needle)) &&
+            needle
+              .split(/\s+/)
+              .every((word) =>
+                `${i.title} ${i.text} ${i.author} ${i.tags.join(" ")}`
+                  .toLowerCase()
+                  .replace(/\s+/g, "")
+                  .includes(word),
+              )) &&
           (days === "all" ||
             (i.publishedAt && Date.parse(i.publishedAt) >= cutoff))
         );
       })
       .toSorted((a, b) =>
-        tab === "latest"
-          ? Date.parse(b.publishedAt || b.firstSeenAt) -
-            Date.parse(a.publishedAt || a.firstSeenAt)
-          : b.score - a.score ||
+        tab === "popular"
+          ? (b.metrics.likes ?? -1) - (a.metrics.likes ?? -1) ||
             Date.parse(b.publishedAt || b.firstSeenAt) -
-              Date.parse(a.publishedAt || a.firstSeenAt),
+              Date.parse(a.publishedAt || a.firstSeenAt)
+          : tab === "latest"
+            ? Date.parse(b.publishedAt || b.firstSeenAt) -
+              Date.parse(a.publishedAt || a.firstSeenAt)
+            : b.score - a.score ||
+              Date.parse(b.publishedAt || b.firstSeenAt) -
+                Date.parse(a.publishedAt || a.firstSeenAt),
       );
-  }, [data, view, tab, platform, category, q, days, scope, saved]);
+  }, [data, view, stream, tab, platform, category, q, days, scope, saved]);
   const card = (item: Item) => {
     const excerpt = readingExcerpt(item);
     return (
@@ -365,6 +394,15 @@ export default function RadarApp({ initial }: { initial: Overview }) {
           <div className="signal-content">
             <div className="card-labels">
               <span className="category-chip">{item.category}</span>
+              {itemStream(item) === "news" && (
+                <span className="claim-label">
+                  {/谣言|rumou?r|未经证实|据传|别当真|段子/i.test(
+                    `${item.title} ${item.text}`,
+                  )
+                    ? "传闻 / 待核实"
+                    : "来源发文 · 未独立核实"}
+                </span>
+              )}
               {item.status === "archive" && <span>归档</span>}
             </div>
             <h2 className="signal-heading">
@@ -425,7 +463,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
         <header className="site-header">
           <a className="simple-brand" href="/" aria-label="AI 创作雷达首页">
             <Radio size={23} />
-            <span>AI 创作雷达</span>
+            <span>AI 雷达</span>
           </a>
           <nav className="simple-nav" aria-label="主要导航">
             {NAV.map((n) => (
@@ -436,9 +474,6 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 aria-current={view === n.id ? "page" : undefined}
               >
                 {n.label}
-                {n.id === "saved" && saved.length > 0 && (
-                  <small>{saved.length}</small>
-                )}
               </button>
             ))}
             <details className="more-menu" ref={moreRef}>
@@ -446,6 +481,14 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 更多 <ChevronDown size={13} />
               </summary>
               <div>
+                <button onClick={() => navigate("saved")}>
+                  <Bookmark size={16} />
+                  我的收藏{saved.length > 0 ? ` · ${saved.length}` : ""}
+                </button>
+                <button onClick={() => navigate("brief")}>
+                  <FileText size={16} />
+                  AI / AIGC 日报
+                </button>
                 <button onClick={() => navigate("trends")}>
                   <Flame size={16} />
                   热点追踪
@@ -485,22 +528,60 @@ export default function RadarApp({ initial }: { initial: Overview }) {
         <main id="radar-main" tabIndex={-1} className="main-wrap">
           <section className="page-intro">
             <div>
-              <h1>{view === "discover" ? "AI 创作资料库" : LABELS[view]}</h1>
+              <h1>{LABELS[view]}</h1>
               <p>
                 {view === "discover"
-                  ? "搜作品、找工具、看教程。"
-                  : view === "saved"
-                    ? "值得留住的内容，都在这里。"
-                    : view === "trends"
-                      ? "有来源的独立讨论，汇成事件线索。"
-                      : view === "brief"
-                        ? "按日期回看当天的创作线索。"
-                        : "管理平台、关键词与采集记录。"}
+                  ? "从 X 与 Telegram，关注 AI 模型、硬件与人物企业的新动向。"
+                  : view === "creation"
+                    ? "聚焦一线创作话题，直接看作品、原文与制作方法。"
+                    : view === "saved"
+                      ? "值得留住的内容，都在这里。"
+                      : view === "trends"
+                        ? "有来源的独立讨论，汇成事件线索。"
+                        : view === "brief"
+                          ? "按日期回看当天的创作线索。"
+                          : "管理平台、关键词与采集记录。"}
               </p>
             </div>
           </section>
-          {(view === "discover" || view === "saved") && (
+          {(view === "discover" || view === "creation" || view === "saved") && (
             <>
+              {view !== "saved" && (
+                <TrackingBoard
+                  stream={stream}
+                  config={tracking}
+                  writable={data.writable}
+                  busy={busy}
+                  monitor={data.newsMonitor}
+                  onSave={async (config) => {
+                    const r = await action("/api/tracking", config);
+                    if (r) setToast("关注配置已保存");
+                    return Boolean(r);
+                  }}
+                  onImport={async () => {
+                    const r = await action("/api/following");
+                    if (r) setToast(`已导入 Following ${r.count} 人`);
+                  }}
+                  onCollect={async (watch, stop) => {
+                    const r = await action("/api/news-collect", {
+                      watch,
+                      stop,
+                    });
+                    if (r)
+                      setToast(
+                        stop
+                          ? "已请求停止本机追踪"
+                          : watch
+                            ? "已开启5分钟检查"
+                            : "正在读取最新公开发文",
+                      );
+                  }}
+                  onTopic={(query) => {
+                    setQ(query);
+                    setCategory("all");
+                  }}
+                />
+              )}
               <section className="browse-controls" aria-label="查找资料">
                 <label className="search-box">
                   <Search size={20} />
@@ -508,7 +589,11 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                     ref={searchRef}
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
-                    placeholder="搜索 AI 短剧、视频、Claude 动画…"
+                    placeholder={
+                      view === "discover"
+                        ? "搜索模型、硬件、人物或企业…"
+                        : "搜索 AI 短剧、视频、Claude 动画…"
+                    }
                     aria-label="搜索资料"
                   />
                   {q ? (
@@ -531,16 +616,27 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   >
                     全部
                   </button>
-                  {PLATFORMS.map((p) => (
+                  {(view === "discover" ? (["x"] as const) : PLATFORMS).map(
+                    (p) => (
+                      <button
+                        key={p}
+                        onClick={() => setPlatform(p)}
+                        aria-pressed={platform === p}
+                        className={platform === p ? "selected" : ""}
+                      >
+                        {PLATFORM_LABELS[p]}
+                      </button>
+                    ),
+                  )}
+                  {view === "discover" && (
                     <button
-                      key={p}
-                      onClick={() => setPlatform(p)}
-                      aria-pressed={platform === p}
-                      className={platform === p ? "selected" : ""}
+                      onClick={() => setPlatform("telegram")}
+                      aria-pressed={platform === "telegram"}
+                      className={platform === "telegram" ? "selected" : ""}
                     >
-                      {PLATFORM_LABELS[p]}
+                      Telegram <small>待接入</small>
                     </button>
-                  ))}
+                  )}
                 </div>
               </section>
               <section className="feed-column" aria-label="资料列表">
@@ -559,6 +655,9 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                       aria-label="排序方式"
                     >
                       <option value="selected">推荐排序</option>
+                      {view === "creation" && (
+                        <option value="popular">平台点赞</option>
+                      )}
                       <option value="latest">最新发布</option>
                     </select>
                     <details className="filter-menu" ref={filterRef}>
@@ -580,7 +679,12 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                             aria-label="内容类别"
                           >
                             <option value="all">全部类别</option>
-                            {CATEGORIES.map((c) => (
+                            {(view === "discover"
+                              ? NEWS_CATEGORIES
+                              : view === "creation"
+                                ? CREATION_CATEGORIES
+                                : CATEGORIES
+                            ).map((c) => (
                               <option key={c} value={c}>
                                 {c}
                               </option>
@@ -632,7 +736,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   <div className="active-filters">
                     <span>
                       {platform !== "all"
-                        ? ` · ${PLATFORM_LABELS[platform]}`
+                        ? ` · ${platform === "telegram" ? "Telegram" : PLATFORM_LABELS[platform]}`
                         : ""}
                       {category !== "all" ? ` · ${category}` : ""}
                       {q.trim() ? ` · “${q.trim()}”` : ""}
@@ -657,20 +761,29 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                       <h3>
                         {view === "saved" && !hasFilters
                           ? "这里等着你的第一条灵感"
-                          : "暂时没有符合条件的资料"}
+                          : platform === "telegram"
+                            ? "Telegram 入口已预留"
+                            : view === "discover" && !hasFilters
+                              ? "还没有采集到新闻"
+                              : "暂时没有符合条件的资料"}
                       </h3>
                       <p>
                         {view === "saved" && !hasFilters
                           ? "点击卡片书签，即可保存在当前浏览器。"
-                          : hasFilters
-                            ? "试试其他关键词、平台或时间范围。"
-                            : "暂无资料，采集后即可在这里浏览。"}
+                          : platform === "telegram"
+                            ? "频道与读取方式尚未配置，暂不展示消息。"
+                            : view === "discover" && !hasFilters
+                              ? "导入Following名单后，检查最新公开发文；已有创作资料在AIGC栏目。"
+                              : hasFilters
+                                ? "试试其他关键词、平台或时间范围。"
+                                : "暂无资料，采集后即可在这里浏览。"}
                       </p>
                       <button
                         className="secondary-button"
                         onClick={() => {
                           if (hasFilters) resetFilters();
-                          else if (view === "saved") navigate("discover");
+                          else if (view === "saved") navigate("creation");
+                          else if (view === "discover") navigate("creation");
                           else {
                             setQ("");
                             setPlatform("all");
@@ -684,8 +797,10 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                         {hasFilters
                           ? "清除筛选"
                           : view === "saved"
-                            ? "去浏览资料"
-                            : "查看采集工作台"}
+                            ? "去看创作话题"
+                            : view === "discover"
+                              ? "查看AIGC创作话题"
+                              : "查看采集工作台"}
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -811,7 +926,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               </div>
               <div className="daily-heading">
                 <div>
-                  <h2>AI 创作日报</h2>
+                  <h2>AI / AIGC 日报</h2>
                   <p>
                     {day.replaceAll("-", " / ")}
                     <span>YASUPO EDITORIAL</span>
@@ -1325,8 +1440,8 @@ export default function RadarApp({ initial }: { initial: Overview }) {
             </span>
             <h2>创作，需要有用的情报。</h2>
             <p>
-              Yasupo AI 创作雷达关注四个平台的 AI
-              短剧、视频、代码动画与工具实践。
+              AI雷达追踪X
+              Following的公开资讯，AIGC栏目整理X、抖音、小红书和YouTube的创作话题与作品。Telegram入口已预留，尚未接入。
             </p>
             <p>
               工作流参考

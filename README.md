@@ -4,6 +4,8 @@
 
 **其他设备 / 其他 Agent 接手：先看 [HANDOFF.md](HANDOFF.md)。** 新版位于 `rewrite/creator-radar` 分支，直接克隆默认 `main` 会得到旧站。可复制的交接提示词见 [AGENT_START.md](AGENT_START.md)。
 
+2026-11-04本地续作：网站现分为“AI雷达热点实时追踪”和“AIGC创作热点话题”，X Following轮询和候选话题管理见 [最新接入与验收](docs/radar-streams-2026-11-04.md)。该记录区分本机主库、Git公开快照和尚未接入的平台；以下初版说明保留作参考。
+
 ## 本机运行
 
 需要 Node.js 24.11+、Python 3.12+。原开发机已安装 Agent-Reach；其他设备应先检查自己的环境，不能沿用原机“已安装、已登录”的结论。

@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { brief, canonicalUrl, ingest, recordHeat, stories } from "./pipeline";
 import { modelsEnabled, scoreWithModels } from "./model";
 import { getStore, type StateStore } from "./store";
+import { newsMonitorStatus } from "./news-monitor";
 import type { Candidate, Overview, Platform, Run } from "./types";
 
 export async function overview(
@@ -11,6 +12,7 @@ export async function overview(
   const db = store || (await getStore());
   const state = await db.read();
   return {
+    newsMonitor: await newsMonitorStatus(),
     state,
     stories: stories(state),
     brief: brief(state, day),

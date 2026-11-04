@@ -3,9 +3,9 @@ import "./globals.css";
 import "./editorial.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.yasupo-hub.cn"),
-  title: "Yasupo · AI 创作雷达",
+  title: "Yasupo · AI 雷达与 AIGC 创作热点",
   description:
-    "从抖音、小红书、YouTube 与 X，追踪 AI 视频、短剧与代码动画的创作线索。",
+    "AI 模型、硬件、人物企业资讯与 AIGC 创作话题；追踪公开发文，保留作品来源。",
   robots: { index: false, follow: false },
 };
 export default function RootLayout({

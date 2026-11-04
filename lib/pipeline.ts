@@ -99,6 +99,11 @@ export function validateCandidates(input: unknown): Candidate[] {
     )
       throw new Error(`第 ${index + 1} 条缺少有效 platform/title/url`);
     canonicalUrl(r.url, r.platform as Platform);
+    if (
+      r.stream !== undefined &&
+      !["news", "creation"].includes(String(r.stream))
+    )
+      throw new Error("stream 需为 news 或 creation");
     for (const key of [
       "author",
       "text",
@@ -182,6 +187,7 @@ const TAG_RULES: [string, RegExp][] = [
 export function classify(
   title: string,
   text: string,
+  stream?: Candidate["stream"],
 ): {
   category: (typeof CATEGORIES)[number];
   tags: string[];
@@ -193,7 +199,7 @@ export function classify(
     ([name]) => name,
   );
   const relevant =
-    /\bAI\b|AIGC|人工智能|生成式|seedance|sora|kling|可灵|veo|即梦|claude|remotion|manim|代码动画|code animation/i.test(
+    /\bAI\b|AIGC|人工智能|生成式|seedance|sora|kling|可灵|veo|即梦|claude|remotion|manim|代码动画|code animation|openai|anthropic|gemini|deepseek|chatgpt|大模型|英伟达|nvidia|\bLLM\b|AI芯片|AI硬件/i.test(
       corpus,
     );
   let category: (typeof CATEGORIES)[number] = "AIGC 工具";
@@ -213,6 +219,22 @@ export function classify(
     category = "AI 视频";
   else if (/教程|tutorial|workflow|工作流|how to|指南/i.test(corpus))
     category = "创作教程";
+  if (stream === "news") {
+    category =
+      /hardware|\bgpu\b|芯片|显卡|硬件|算力|机器人|robot|眼镜|wearable/i.test(
+        corpus,
+      )
+        ? "AI 硬件"
+        : /\bIPO\b|融资|收购|上市|财报|离职|任命|funding|acquisition|earnings|leadership/i.test(
+              corpus,
+            )
+          ? "人物与企业"
+          : /model|模型|\bLLM\b|GPT|Claude|Gemini|DeepSeek|benchmark|推理|训练/i.test(
+                corpus,
+              )
+            ? "AI 模型"
+            : "人物与企业";
+  }
   // Quality measures information and practical evidence, never engagement or novelty claims.
   const score = relevant
     ? Math.min(
@@ -231,7 +253,7 @@ export function classify(
   return { category, tags, score, relevant };
 }
 export function refreshClassification(item: Item, at: number) {
-  const analysis = classify(item.title, item.text);
+  const analysis = classify(item.title, item.text, item.stream);
   item.category = analysis.category;
   item.tags = analysis.tags;
   if (item.scoreMode === "rules") item.score = analysis.score;
@@ -265,7 +287,7 @@ export function ingest(
     const id = createHash("sha256").update(url).digest("hex").slice(0, 20);
     const old = state.items.find((i) => i.id === id);
     const date = verifiedDate(c, now);
-    const analysis = classify(c.title, c.text || "");
+    const analysis = classify(c.title, c.text || "", c.stream);
     const observation = {
       at,
       metrics: c.metrics || {},
@@ -311,6 +333,7 @@ export function ingest(
           : "excluded";
       }
       if (c.eventKey) old.eventKey = c.eventKey.slice(0, 160);
+      if (c.stream) old.stream = c.stream;
       refreshClassification(old, now);
       updated++;
       continue;
@@ -327,6 +350,7 @@ export function ingest(
     state.items.push({
       id,
       platform: c.platform,
+      stream: c.stream,
       url,
       title: c.title,
       author,

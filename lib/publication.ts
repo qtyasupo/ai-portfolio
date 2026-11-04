@@ -1,7 +1,8 @@
 import type { Overview, RadarState } from "./types";
 export function publicState(state: RadarState): RadarState {
+  const { tracking: _privateTracking, ...shared } = state;
   return {
-    ...state,
+    ...shared,
     items: state.items
       .filter((i) => i.status === "selected" || i.status === "archive")
       .map((i) => ({

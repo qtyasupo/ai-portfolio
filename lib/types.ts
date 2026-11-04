@@ -6,7 +6,7 @@ export const PLATFORM_LABELS: Record<Platform, string> = {
   youtube: "YouTube",
   x: "X",
 };
-export const CATEGORIES = [
+export const CREATION_CATEGORIES = [
   "AI 短剧",
   "AI 视频",
   "代码动画",
@@ -14,11 +14,15 @@ export const CATEGORIES = [
   "AIGC 工具",
   "创作教程",
 ] as const;
+export const NEWS_CATEGORIES = ["AI 模型", "AI 硬件", "人物与企业"] as const;
+export const CATEGORIES = [...CREATION_CATEGORIES, ...NEWS_CATEGORIES] as const;
+export type Stream = "news" | "creation";
 export type Category = (typeof CATEGORIES)[number];
 export type Metrics = Partial<
   Record<"likes" | "views" | "comments" | "favorites" | "shares", number>
 >;
 export interface Candidate {
+  stream?: Stream;
   platform: Platform;
   url: string;
   title: string;
@@ -42,6 +46,7 @@ export interface Observation {
   evidence: string;
 }
 export interface Item {
+  stream?: Stream;
   id: string;
   platform: Platform;
   url: string;
@@ -97,6 +102,7 @@ export interface HeatPoint {
   values: Record<string, number>;
 }
 export interface RadarState {
+  tracking?: TrackingConfig;
   version: 1;
   updatedAt: string | null;
   items: Item[];
@@ -124,6 +130,12 @@ export interface Brief {
   themes: { name: Category; count: number }[];
 }
 export interface Overview {
+  newsMonitor?: {
+    mode?: "once" | "watch";
+    running: boolean;
+    lastAttemptAt: string | null;
+    message: string;
+  };
   state: RadarState;
   stories: Story[];
   brief: Brief;
@@ -132,4 +144,23 @@ export interface Overview {
   collectorRunning: boolean;
   model: "rules" | "dual-model";
   coverage: string;
+}
+export interface WatchTarget {
+  handle: string;
+  label: string;
+  enabled: boolean;
+  confirmed: boolean;
+}
+export interface WatchTopic {
+  id: string;
+  label: string;
+  query: string;
+  platforms: Platform[];
+  confirmed: boolean;
+  enabled: boolean;
+}
+export interface TrackingConfig {
+  accounts: WatchTarget[];
+  topics: WatchTopic[];
+  telegram: { status: "placeholder"; channels: string[] };
 }
