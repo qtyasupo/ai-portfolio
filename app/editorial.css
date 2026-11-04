@@ -782,3 +782,119 @@ summary:focus-visible {
   color: #9a7850;
   font-size: 10px;
 }
+
+.platform-topic-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.platform-topic-group {
+  padding: 12px 0 14px;
+  border-bottom: 1px solid #dce2d3;
+  min-width: 0;
+}
+.platform-topic-group:only-child {
+  grid-column: 1 / -1;
+}
+.platform-topic-group h2 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #3a5630;
+}
+.platform-topic-group h2 span {
+  font-size: 11px;
+  color: #7a886c;
+  font-weight: 400;
+  margin-left: 7px;
+}
+.platform-topic-group .topic-shortcuts {
+  gap: 7px;
+  margin: 0;
+}
+.platform-topic-group .topic-shortcuts button {
+  min-height: 32px;
+  padding: 5px 9px;
+  background: #edf2e5;
+  border-radius: 4px;
+  color: #597541;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.7;
+}
+.platform-topic-group .topic-shortcuts button[aria-pressed="true"] {
+  background: #dce7ce;
+  color: #2f4e24;
+}
+.platform-topic-group .topic-method {
+  font-size: 10px;
+  color: #7c896e;
+  line-height: 1.8;
+  margin: 8px 0 0;
+}
+.topic-evidence {
+  margin: 14px 0;
+  padding: 18px;
+  background: #f3f6ed;
+  border: 1px solid #d7e1cd;
+  border-radius: 5px;
+}
+.topic-evidence-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: #4a6835;
+}
+.topic-evidence-heading a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #75855f;
+}
+.topic-evidence p {
+  font-size: 12px;
+  color: #6f805c;
+  line-height: 1.9;
+  margin: 10px 0;
+}
+.topic-evidence ul {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+}
+.topic-evidence li {
+  padding: 9px 0;
+  border-bottom: 1px solid #dce4d2;
+}
+.topic-evidence li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #4a6835;
+  line-height: 1.8;
+}
+.topic-evidence li span {
+  display: block;
+  font-size: 10px;
+  color: #82916f;
+  margin-top: 4px;
+}
+.topic-evidence > small {
+  display: block;
+  font-size: 10px;
+  color: #839172;
+  line-height: 1.9;
+}
+@media (max-width: 650px) {
+  .platform-topic-groups {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .topic-evidence {
+    padding: 15px;
+  }
+}

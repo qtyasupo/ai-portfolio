@@ -550,6 +550,8 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 <TrackingBoard
                   stream={stream}
                   config={tracking}
+                  platform={platform}
+                  query={q}
                   writable={data.writable}
                   busy={busy}
                   monitor={data.newsMonitor}
@@ -576,7 +578,8 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                             : "正在读取最新公开发文",
                       );
                   }}
-                  onTopic={(query) => {
+                  onTopic={(query, topicPlatform) => {
+                    if (topicPlatform) setPlatform(topicPlatform);
                     setQ(query);
                     setCategory("all");
                   }}

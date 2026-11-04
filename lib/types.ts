@@ -152,6 +152,20 @@ export interface WatchTarget {
   confirmed: boolean;
 }
 export interface WatchTopic {
+  basis?: {
+    observedAt: string;
+    summary: string;
+    samples: {
+      platform: Platform;
+      url: string;
+      accessUrl?: string;
+      title: string;
+      likes?: number;
+      publishedAt?: string;
+      dateVerified: boolean;
+      dateEvidence?: string;
+    }[];
+  };
   id: string;
   label: string;
   query: string;

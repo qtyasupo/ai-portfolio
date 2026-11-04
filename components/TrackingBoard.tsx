@@ -1,12 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Check, ChevronDown, RefreshCw, Settings2 } from "lucide-react";
-import { normalizeHandle } from "@/lib/tracking";
-import type { Overview, Stream, TrackingConfig } from "@/lib/types";
+import {
+  normalizeHandle,
+  formatTopicDraft,
+  parseTopicDraft,
+} from "@/lib/tracking";
+import PlatformTopics from "./PlatformTopics";
+import type { Overview, Stream, TrackingConfig, Platform } from "@/lib/types";
 
 export default function TrackingBoard({
   stream,
   config,
+  platform,
+  query,
   writable,
   busy,
   monitor,
@@ -17,13 +24,15 @@ export default function TrackingBoard({
 }: {
   stream: Stream;
   config: TrackingConfig;
+  platform: Platform | "all" | "telegram";
+  query: string;
   writable: boolean;
   busy: boolean;
   monitor: Overview["newsMonitor"];
   onSave: (config: TrackingConfig) => Promise<boolean>;
   onImport: () => Promise<void>;
   onCollect: (watch: boolean, stop?: boolean) => Promise<void>;
-  onTopic: (query: string) => void;
+  onTopic: (query: string, platform?: Platform) => void;
 }) {
   const [accounts, setAccounts] = useState("");
   const [topicText, setTopicText] = useState("");
@@ -37,9 +46,7 @@ export default function TrackingBoard({
         .map((a) => `@${a.handle}`)
         .join("\n"),
     );
-    setTopicText(
-      current.topics.map((t) => `${t.label} | ${t.query}`).join("\n"),
-    );
+    setTopicText(formatTopicDraft(current.topics));
   }, [configKey]);
   const count = config.accounts.filter((a) => a.confirmed && a.enabled).length;
   return (
@@ -64,14 +71,12 @@ export default function TrackingBoard({
           </button>
         </div>
       ) : (
-        <div className="topic-shortcuts" aria-label="候选创作话题">
-          {config.topics.slice(0, 6).map((t) => (
-            <button key={t.id} onClick={() => onTopic(t.query)}>
-              #{t.label}
-              {!t.confirmed && <small>待定</small>}
-            </button>
-          ))}
-        </div>
+        <PlatformTopics
+          topics={config.topics}
+          platform={platform}
+          query={query}
+          onTopic={onTopic}
+        />
       )}
       <details className="tracking-settings">
         <summary>
@@ -187,10 +192,10 @@ export default function TrackingBoard({
             </>
           ) : (
             <>
-              <h3>先放候选话题，我们一起筛选</h3>
+              <h3>按平台管理话题</h3>
               <p>
-                每行写“话题名称 |
-                搜索词”。目前是候选词，不代表平台实时热榜。作品的原文链接、文字摘录和可见互动保留在列表中。
+                每行写“平台 | 话题名称 |
+                搜索词”。平台可用抖音、小红书、X、YouTube，多平台用逗号分隔。已核对的样本依据会保留；更改话题或平台后重新验证。
               </p>
               <textarea
                 aria-label="创作追踪话题"
@@ -201,37 +206,12 @@ export default function TrackingBoard({
                 <button
                   disabled={!writable || busy}
                   onClick={async () => {
-                    const topics = topicText
-                      .split("\n")
-                      .filter((line) => line.trim())
-                      .map((line, index) => {
-                        const [label, query] = line
-                          .split("|")
-                          .map((v) => v.trim());
-                        return {
-                          id: `custom-${index}`,
-                          label,
-                          query: query || label,
-                          platforms: [
-                            "x",
-                            "douyin",
-                            "xiaohongshu",
-                            "youtube",
-                          ] as const,
-                          confirmed: true,
-                          enabled: true,
-                        };
-                      });
-                    if (
-                      await onSave({
-                        ...config,
-                        topics: topics.map((t) => ({
-                          ...t,
-                          platforms: [...t.platforms],
-                        })),
-                      })
-                    )
-                      setError("");
+                    try {
+                      const topics = parseTopicDraft(topicText, config.topics);
+                      if (await onSave({ ...config, topics })) setError("");
+                    } catch (e) {
+                      setError(e instanceof Error ? e.message : "话题格式无效");
+                    }
                   }}
                 >
                   <Check size={14} />
@@ -239,7 +219,7 @@ export default function TrackingBoard({
                 </button>
               </div>
               <p className="tracking-note">
-                保存后供四个平台轮换检索。抖音、小红书优先关注近7天样本与平台点赞；不会把关键词结果标成全平台热榜。
+                话题只进入所选平台的轮换词。高赞样本与近期趋势分开：编辑日期、缺年份日期不视为已核验的原发布日期。
               </p>
             </>
           )}

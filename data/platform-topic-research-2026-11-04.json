@@ -1,0 +1,177 @@
+{
+  "observedAt": "2026-11-04T07:27:00.075586+00:00",
+  "method": "各平台AI检索前10条，补读抖音6条/小红书5条；可见互动样本归纳，非官方分区热榜。编辑时间不作原发布时间。",
+  "topics": [
+    {
+      "id": "dy-wave",
+      "label": "AI创作浪潮计划",
+      "query": "AI创作浪潮计划",
+      "platforms": [
+        "douyin"
+      ],
+      "confirmed": true,
+      "enabled": true,
+      "basis": {
+        "observedAt": "2026-11-04T07:26:31.392778+00:00",
+        "summary": "本轮样本可见8.9万赞；已核验11月3日发布，文案明确使用该标签。用于跟进风格向AI创作，不代表官方榜首。",
+        "samples": [
+          {
+            "platform": "douyin",
+            "url": "https://www.douyin.com/video/7703884080194014464",
+            "title": "我们会在世界的尽头相见 换一换风格~\n#AI创作浪潮计划 #日系 #女主 #氛围感 #女神",
+            "likes": 89000,
+            "dateVerified": true,
+            "dateEvidence": "发布时间：2026-11-03 18:04",
+            "publishedAt": "2026-11-03T18:04:00+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dy-jimeng",
+      "label": "即梦AI创作者成长计划",
+      "query": "即梦AI创作者成长计划",
+      "platforms": [
+        "douyin"
+      ],
+      "confirmed": true,
+      "enabled": true,
+      "basis": {
+        "observedAt": "2026-11-04T07:26:22.289548+00:00",
+        "summary": "本轮NOVA相关作品可见7.4万赞，已核验11月2日发布；该标签实际出现在作品文案中。",
+        "samples": [
+          {
+            "platform": "douyin",
+            "url": "https://www.douyin.com/video/7703401383600765819",
+            "title": "NOVA第十九集：我把闺蜜捧成世一idol，却被闺蜜夺去一切，重生在西南山村我要如何拿回一切",
+            "likes": 74000,
+            "dateVerified": true,
+            "dateEvidence": "发布时间：2026-11-02 18:00",
+            "publishedAt": "2026-11-02T18:00:00+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dy-drama",
+      "label": "AI短剧 / AI动画",
+      "query": "AI短剧",
+      "platforms": [
+        "douyin"
+      ],
+      "confirmed": true,
+      "enabled": true,
+      "basis": {
+        "observedAt": "2026-11-04T07:26:38.970785+00:00",
+        "summary": "本轮剧情向样本可见1.7万赞，已核验11月3日发布；文案同时出现AI短剧和AI动画标签。",
+        "samples": [
+          {
+            "platform": "douyin",
+            "url": "https://www.douyin.com/video/7703805592023993609",
+            "title": "月薪家族，老四弟弟的月薪有点特殊 #抽象艺术 #ai短剧 #ai动画  #瓜子二手车",
+            "likes": 17000,
+            "dateVerified": true,
+            "dateEvidence": "发布时间：2026-11-03 14:41",
+            "publishedAt": "2026-11-03T14:41:00+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "xhs-tools",
+      "label": "AI工具 / AI效率工具",
+      "query": "AI工具",
+      "platforms": [
+        "xiaohongshu"
+      ],
+      "confirmed": true,
+      "enabled": true,
+      "basis": {
+        "observedAt": "2026-11-04T07:26:50.475199+00:00",
+        "summary": "两个相关笔记可见1.2万赞和2496赞；日期只读到编辑或缺年份信息，按高互动线索收录，不认定近期热度第一。",
+        "samples": [
+          {
+            "platform": "xiaohongshu",
+            "url": "https://www.xiaohongshu.com/explore/6a89a86d0000000033008dae",
+            "title": "一图看懂｜2026最好用的AI工具",
+            "likes": 12000,
+            "dateVerified": false,
+            "dateEvidence": "编辑于 08-22"
+          },
+          {
+            "platform": "xiaohongshu",
+            "url": "https://www.xiaohongshu.com/explore/6adb75e5000000003101cb2d",
+            "title": "GitHub 上都是免费的东西，但几乎没人用",
+            "likes": 2496,
+            "dateVerified": false,
+            "dateEvidence": "10-24 北京"
+          }
+        ]
+      }
+    },
+    {
+      "id": "xhs-vibecoding",
+      "label": "Vibecoding / AI手搓APP",
+      "query": "AI手搓APP",
+      "platforms": [
+        "xiaohongshu"
+      ],
+      "confirmed": true,
+      "enabled": true,
+      "basis": {
+        "observedAt": "2026-11-04T07:26:41.488423+00:00",
+        "summary": "手搓APP讨论贴可见4532赞、3224评论；活动贴使用Vibecoding玩家标签。原始发布时间均待核验。",
+        "samples": [
+          {
+            "platform": "xiaohongshu",
+            "url": "https://www.xiaohongshu.com/explore/6ad1a1dd000000000b006b3a",
+            "title": "大家都用AI搓了什么东西？或者工具",
+            "likes": 4532,
+            "dateVerified": false,
+            "dateEvidence": "编辑于 昨天 07:06 江苏"
+          },
+          {
+            "platform": "xiaohongshu",
+            "url": "https://www.xiaohongshu.com/explore/6ae43168000000002703270e",
+            "title": "@AI玩家，你的脑洞该上场了！",
+            "likes": 152,
+            "dateVerified": false,
+            "dateEvidence": "编辑于 4天前"
+          }
+        ]
+      }
+    },
+    {
+      "id": "xhs-player",
+      "label": "AI玩家 / AI跟练玩家",
+      "query": "AI玩家",
+      "platforms": [
+        "xiaohongshu"
+      ],
+      "confirmed": true,
+      "enabled": true,
+      "basis": {
+        "observedAt": "2026-11-04T07:26:27.032106+00:00",
+        "summary": "视频薯活动文案给出10月30日—11月29日窗口，猫咪创作样本也使用该话题。活动文案和互动是线索，不是全站排名；原发布日期待核验。",
+        "samples": [
+          {
+            "platform": "xiaohongshu",
+            "url": "https://www.xiaohongshu.com/explore/6ae43168000000002703270e",
+            "title": "@AI玩家，你的脑洞该上场了！",
+            "likes": 152,
+            "dateVerified": false,
+            "dateEvidence": "编辑于 4天前"
+          },
+          {
+            "platform": "xiaohongshu",
+            "url": "https://www.xiaohongshu.com/explore/6ae2c148000000002b03bfb7",
+            "title": "咪的飞行日记",
+            "likes": 471,
+            "dateVerified": false,
+            "dateEvidence": "编辑于 4天前 四川"
+          }
+        ]
+      }
+    }
+  ]
+}

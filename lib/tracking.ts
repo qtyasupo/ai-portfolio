@@ -1,10 +1,68 @@
+import { validateTopicBasis } from "./topic-basis";
 import {
   NEWS_CATEGORIES,
+  PLATFORM_LABELS,
   PLATFORMS,
   type Item,
   type Stream,
   type TrackingConfig,
+  type WatchTopic,
+  type Platform,
 } from "./types";
+
+export function formatTopicDraft(topics: WatchTopic[]): string {
+  return topics
+    .map(
+      (t) =>
+        `${t.platforms.map((p) => PLATFORM_LABELS[p]).join(",")} | ${t.label} | ${t.query}`,
+    )
+    .join("\n");
+}
+export function parseTopicDraft(
+  text: string,
+  previous: WatchTopic[],
+): WatchTopic[] {
+  return text
+    .split("\n")
+    .filter((line) => line.trim())
+    .map((line, index) => {
+      const [scope, label, ...queryParts] = line
+        .split("|")
+        .map((v) => v.trim());
+      const query = queryParts.join("|");
+      if (!scope || !label || !query)
+        throw new Error("每行请使用：平台 | 话题名称 | 搜索词");
+      const platforms = [
+        ...new Set(
+          scope.split(/[,，、]/).map((name) => {
+            const p = PLATFORMS.find(
+              (p) =>
+                p === name.trim().toLowerCase() ||
+                PLATFORM_LABELS[p].toLowerCase() === name.trim().toLowerCase(),
+            );
+            if (!p) throw new Error(`不支持的平台：${name}`);
+            return p;
+          }),
+        ),
+      ] as Platform[];
+      const old = previous.find(
+        (t) =>
+          t.label === label &&
+          t.query === query &&
+          t.platforms.length === platforms.length &&
+          t.platforms.every((p) => platforms.includes(p)),
+      );
+      return {
+        id: old?.id || `draft-${crypto.randomUUID()}`,
+        label,
+        query,
+        platforms,
+        confirmed: true,
+        enabled: true,
+        ...(old?.basis ? { basis: old.basis } : {}),
+      };
+    });
+}
 
 // Suggestions only; nothing is monitored until the operator confirms and enables it.
 export function defaultTracking(): TrackingConfig {
@@ -129,6 +187,7 @@ export function validateTracking(value: unknown): TrackingConfig {
       platforms: [...new Set(t.platforms)],
       confirmed: t.confirmed,
       enabled: t.enabled,
+      ...(t.basis ? { basis: validateTopicBasis(t.basis, t.platforms) } : {}),
     };
   });
   if (new Set(topics.map((t) => t.id)).size !== topics.length)
