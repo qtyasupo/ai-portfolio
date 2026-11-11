@@ -1,12 +1,14 @@
 import { useState, type FormEvent } from "react";
-import { ArrowUpRight, Bookmark, Plus } from "lucide-react";
+import { ArrowUpRight, Bookmark, ChevronDown, Plus } from "lucide-react";
 
-export type GitHubBookmark = { title: string; url: string };
+export type GitHubBookmark = { title: string; url: string; text?: string };
 export const GITHUB_BOOKMARKS_KEY = "yasupo-github-bookmarks";
+const MAX_BOOKMARK_TEXT = 30_000;
 
 export function normalizeGitHubBookmark(
   title: unknown,
   link: unknown,
+  text?: unknown,
 ): GitHubBookmark | null {
   if (typeof title !== "string" || typeof link !== "string") return null;
   const label = title.trim();
@@ -21,9 +23,12 @@ export function normalizeGitHubBookmark(
     )
       return null;
     const path = url.pathname.replace(/\/+$/, "");
+    const savedText =
+      typeof text === "string" ? text.trim().slice(0, MAX_BOOKMARK_TEXT) : "";
     return {
       title: label || path.slice(1).split("/").slice(0, 2).join("/"),
       url: url.origin + path,
+      ...(savedText && { text: savedText }),
     };
   } catch {
     return null;
@@ -33,22 +38,24 @@ export function normalizeGitHubBookmark(
 export function GitHubBookmarkForm({
   onSave,
 }: {
-  onSave: (bookmark: GitHubBookmark) => void;
+  onSave: (bookmark: GitHubBookmark, hasTitle: boolean) => void;
 }) {
   const [error, setError] = useState("");
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const fields = new FormData(form);
+    const title = String(fields.get("title") ?? "").trim();
     const bookmark = normalizeGitHubBookmark(
-      fields.get("title"),
+      title,
       fields.get("url"),
+      fields.get("text"),
     );
     if (!bookmark) {
       setError("请输入有效的 GitHub 仓库或文章链接。");
       return;
     }
-    onSave(bookmark);
+    onSave(bookmark, Boolean(title));
     form.reset();
     setError("");
   };
@@ -69,9 +76,18 @@ export function GitHubBookmarkForm({
           aria-describedby={error ? "github-bookmark-error" : undefined}
         />
       </label>
-      <label>
+      <label className="github-bookmark-title-input">
         标题（可选）
         <input name="title" maxLength={160} placeholder="仓库或文章标题" />
+      </label>
+      <label className="github-bookmark-text-input">
+        正文或笔记（可选）
+        <textarea
+          name="text"
+          rows={4}
+          maxLength={MAX_BOOKMARK_TEXT}
+          placeholder="粘贴要在站内阅读的文字"
+        />
       </label>
       <button type="submit" className="secondary-button">
         <Plus size={16} /> 加入收藏
@@ -105,16 +121,23 @@ export function GitHubBookmarkCard({
           <span className="author">{repository}</span>
         </span>
       </div>
-      <h2 className="signal-heading">
-        <a
-          className="card-title"
-          href={bookmark.url}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {bookmark.title} <ArrowUpRight size={15} aria-hidden="true" />
-        </a>
-      </h2>
+      <details className="github-bookmark-reader">
+        <summary className="card-title">
+          {bookmark.title} <ChevronDown size={16} aria-hidden="true" />
+        </summary>
+        <div className="github-bookmark-reading">
+          {bookmark.text ? (
+            <div className="github-bookmark-text">{bookmark.text}</div>
+          ) : (
+            <p>
+              这条收藏还没有站内文字。可以在 GitHub 栏用同一链接补充正文或笔记。
+            </p>
+          )}
+          <a href={bookmark.url} target="_blank" rel="noreferrer">
+            GitHub 原文 <ArrowUpRight size={14} aria-hidden="true" />
+          </a>
+        </div>
+      </details>
       <div className="signal-footer">
         <div className="card-actions">
           <button

@@ -181,7 +181,11 @@ export default function RadarApp({ initial }: { initial: Overview }) {
             !("url" in entry)
           )
             continue;
-          const bookmark = normalizeGitHubBookmark(entry.title, entry.url);
+          const bookmark = normalizeGitHubBookmark(
+            entry.title,
+            entry.url,
+            "text" in entry ? entry.text : undefined,
+          );
           if (bookmark) bookmarks.set(bookmark.url, bookmark);
         }
         setGitHubBookmarks([...bookmarks.values()]);
@@ -422,7 +426,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       days === "all" &&
       scope === "all")
       ? githubBookmarks.filter((bookmark) =>
-          `${bookmark.title} ${bookmark.url}`
+          `${bookmark.title} ${bookmark.url} ${bookmark.text ?? ""}`
             .toLowerCase()
             .includes(q.trim().toLowerCase()),
         )
@@ -709,16 +713,26 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               </section>
               {platform === "github" && (
                 <GitHubBookmarkForm
-                  onSave={(bookmark) => {
+                  onSave={(bookmark, hasTitle) => {
+                    const existing = githubBookmarks.find(
+                      (saved) => saved.url === bookmark.url,
+                    );
                     setQ("");
                     saveGitHubBookmarks(
                       [
-                        bookmark,
+                        {
+                          ...existing,
+                          ...bookmark,
+                          title:
+                            !hasTitle && existing
+                              ? existing.title
+                              : bookmark.title,
+                        },
                         ...githubBookmarks.filter(
                           (saved) => saved.url !== bookmark.url,
                         ),
                       ],
-                      "已加入本机收藏",
+                      existing ? "已更新本机收藏" : "已加入本机收藏",
                     );
                   }}
                 />
