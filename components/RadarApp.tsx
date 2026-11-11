@@ -1,6 +1,13 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TrackingBoard from "./TrackingBoard";
+import {
+  GITHUB_BOOKMARKS_KEY,
+  GitHubBookmarkCard,
+  GitHubBookmarkForm,
+  normalizeGitHubBookmark,
+  type GitHubBookmark,
+} from "./GitHubBookmarks";
 import { publishedTracking, itemStream } from "@/lib/tracking";
 import { readingExcerpt } from "@/lib/presentation";
 import {
@@ -120,14 +127,15 @@ function today() {
 export default function RadarApp({ initial }: { initial: Overview }) {
   const [data, setData] = useState(initial);
   const [view, setView] = useState<View>("discover");
-  const [platform, setPlatform] = useState<Platform | "all" | "telegram">(
-    "all",
-  );
+  const [platform, setPlatform] = useState<
+    Platform | "all" | "telegram" | "github"
+  >("all");
   const [category, setCategory] = useState<Category | "all">("all");
   const [q, setQ] = useState("");
   const [tab, setTab] = useState("latest");
   const [days, setDays] = useState("all");
   const [saved, setSaved] = useState<string[]>([]);
+  const [githubBookmarks, setGitHubBookmarks] = useState<GitHubBookmark[]>([]);
   const [detail, setDetail] = useState<Item | null>(null);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState("");
@@ -158,6 +166,26 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       );
       if (Array.isArray(stored))
         setSaved(stored.filter((id): id is string => typeof id === "string"));
+    } catch {}
+    try {
+      const stored: unknown = JSON.parse(
+        localStorage.getItem(GITHUB_BOOKMARKS_KEY) || "[]",
+      );
+      if (Array.isArray(stored)) {
+        const bookmarks = new Map<string, GitHubBookmark>();
+        for (const entry of stored as unknown[]) {
+          if (
+            !entry ||
+            typeof entry !== "object" ||
+            !("title" in entry) ||
+            !("url" in entry)
+          )
+            continue;
+          const bookmark = normalizeGitHubBookmark(entry.title, entry.url);
+          if (bookmark) bookmarks.set(bookmark.url, bookmark);
+        }
+        setGitHubBookmarks([...bookmarks.values()]);
+      }
     } catch {}
     const v = new URLSearchParams(location.search).get("view");
     if (v && Object.hasOwn(LABELS, v)) setView(v as View);
@@ -265,13 +293,13 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   }, []);
   const navigate = (next: View) => {
     setView(next);
-    if (next === "discover" || next === "creation") {
+    if (next === "discover" || next === "creation" || next === "saved") {
       setPlatform("all");
       setCategory("all");
       setQ("");
       setScope("all");
-      setDays(next === "discover" ? "all" : "7");
-      setTab(next === "discover" ? "latest" : "popular");
+      setDays(next === "creation" ? "7" : "all");
+      setTab(next === "creation" ? "popular" : "latest");
     }
     if (moreRef.current) moreRef.current.open = false;
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -293,6 +321,15 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       return;
     }
     setToast(next.includes(id) ? "已加入本机收藏" : "已取消收藏");
+  };
+  const saveGitHubBookmarks = (next: GitHubBookmark[], message: string) => {
+    setGitHubBookmarks(next);
+    try {
+      localStorage.setItem(GITHUB_BOOKMARKS_KEY, JSON.stringify(next));
+      setToast(message);
+    } catch {
+      setToast("浏览器无法保存收藏，本次仅在当前页面保留");
+    }
   };
   const action = async (path: string, body?: unknown) => {
     setBusy(true);
@@ -377,6 +414,20 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 Date.parse(a.publishedAt || a.firstSeenAt),
       );
   }, [data, view, stream, tab, platform, category, q, days, scope, saved]);
+  const githubResults =
+    platform === "github" ||
+    (view === "saved" &&
+      platform === "all" &&
+      category === "all" &&
+      days === "all" &&
+      scope === "all")
+      ? githubBookmarks.filter((bookmark) =>
+          `${bookmark.title} ${bookmark.url}`
+            .toLowerCase()
+            .includes(q.trim().toLowerCase()),
+        )
+      : [];
+  const savedCount = saved.length + githubBookmarks.length;
   const card = (item: Item) => {
     const excerpt = readingExcerpt(item);
     return (
@@ -483,7 +534,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               <div>
                 <button onClick={() => navigate("saved")}>
                   <Bookmark size={16} />
-                  我的收藏{saved.length > 0 ? ` · ${saved.length}` : ""}
+                  我的收藏{savedCount > 0 ? ` · ${savedCount}` : ""}
                 </button>
                 <button onClick={() => navigate("brief")}>
                   <FileText size={16} />
@@ -535,7 +586,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   : view === "creation"
                     ? "聚焦一线创作话题，直接看作品、原文与制作方法。"
                     : view === "saved"
-                      ? "值得留住的内容，都在这里。"
+                      ? "收藏保存在当前浏览器。"
                       : view === "trends"
                         ? "有来源的独立讨论，汇成事件线索。"
                         : view === "brief"
@@ -546,7 +597,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
           </section>
           {(view === "discover" || view === "creation" || view === "saved") && (
             <>
-              {view !== "saved" && (
+              {view !== "saved" && platform !== "github" && (
                 <TrackingBoard
                   stream={stream}
                   config={tracking}
@@ -595,7 +646,9 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                     placeholder={
                       view === "discover"
                         ? "搜索模型、硬件、人物或企业…"
-                        : "搜索 AI 短剧、视频、Claude 动画…"
+                        : platform === "github" || view === "saved"
+                          ? "搜索收藏…"
+                          : "搜索 AI 短剧、视频、Claude 动画…"
                     }
                     aria-label="搜索资料"
                   />
@@ -640,8 +693,36 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                       Telegram <small>待接入</small>
                     </button>
                   )}
+                  {view !== "discover" && (
+                    <button
+                      onClick={() => {
+                        setPlatform("github");
+                        setQ("");
+                      }}
+                      aria-pressed={platform === "github"}
+                      className={platform === "github" ? "selected" : ""}
+                    >
+                      GitHub
+                    </button>
+                  )}
                 </div>
               </section>
+              {platform === "github" && (
+                <GitHubBookmarkForm
+                  onSave={(bookmark) => {
+                    setQ("");
+                    saveGitHubBookmarks(
+                      [
+                        bookmark,
+                        ...githubBookmarks.filter(
+                          (saved) => saved.url !== bookmark.url,
+                        ),
+                      ],
+                      "已加入本机收藏",
+                    );
+                  }}
+                />
+              )}
               <section className="feed-column" aria-label="资料列表">
                 <div className="browse-toolbar">
                   <span
@@ -649,9 +730,12 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                     role="status"
                     aria-live="polite"
                   >
-                    {filtered.length} 条资料
+                    {filtered.length + githubResults.length} 条资料
                   </span>
-                  <div className="browse-options">
+                  <div
+                    className="browse-options"
+                    hidden={platform === "github"}
+                  >
                     <select
                       value={tab}
                       onChange={(e) => setTab(e.target.value)}
@@ -735,7 +819,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                     </details>
                   </div>
                 </div>
-                {hasFilters && (
+                {hasFilters && platform !== "github" && (
                   <div className="active-filters">
                     <span>
                       {platform !== "all"
@@ -754,8 +838,37 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   </div>
                 )}
                 <div className="feed-list">
-                  {filtered.length ? (
-                    filtered.map(card)
+                  {filtered.length || githubResults.length ? (
+                    <>
+                      {githubResults.map((bookmark) => (
+                        <GitHubBookmarkCard
+                          key={bookmark.url}
+                          bookmark={bookmark}
+                          onRemove={() =>
+                            saveGitHubBookmarks(
+                              githubBookmarks.filter(
+                                (saved) => saved.url !== bookmark.url,
+                              ),
+                              "已取消收藏",
+                            )
+                          }
+                        />
+                      ))}
+                      {filtered.map(card)}
+                    </>
+                  ) : platform === "github" ? (
+                    <div className="empty-state">
+                      <h3>
+                        {q.trim()
+                          ? "没有匹配的 GitHub 收藏"
+                          : "收藏 GitHub 仓库和文章"}
+                      </h3>
+                      <p>
+                        {q.trim()
+                          ? "试试其他标题或仓库名。"
+                          : "粘贴链接后，即可在这里和「我的收藏」打开。"}
+                      </p>
+                    </div>
                   ) : (
                     <div className="empty-state">
                       <div>
@@ -809,12 +922,14 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                     </div>
                   )}
                 </div>
-                <p className="data-note">
-                  {data.storage === "snapshot" ? "资料快照" : "资料库"} ·{" "}
-                  {data.state.updatedAt
-                    ? `更新于 ${time(data.state.updatedAt, true)}`
-                    : "尚未采集"}
-                </p>
+                {platform !== "github" && (
+                  <p className="data-note">
+                    {data.storage === "snapshot" ? "资料快照" : "资料库"} ·{" "}
+                    {data.state.updatedAt
+                      ? `更新于 ${time(data.state.updatedAt, true)}`
+                      : "尚未采集"}
+                  </p>
+                )}
               </section>
             </>
           )}

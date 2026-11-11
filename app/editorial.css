@@ -204,6 +204,51 @@ summary:focus-visible {
   background: #edf1e7;
   color: #355431;
 }
+.github-bookmark-form {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) auto;
+  align-items: end;
+  gap: 12px;
+  margin-top: 18px;
+}
+.github-bookmark-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.github-bookmark-form input {
+  min-width: 0;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.github-bookmark-form p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--red);
+}
+.github-bookmark .card-title {
+  overflow-wrap: anywhere;
+}
+.github-bookmark .card-title svg {
+  vertical-align: middle;
+}
+.github-bookmark .signal-footer {
+  justify-content: flex-end;
+}
+@media (max-width: 560px) {
+  .github-bookmark-form {
+    grid-template-columns: 1fr;
+  }
+  .github-bookmark-form button {
+    justify-self: start;
+  }
+}
 .feed-column {
   min-width: 0;
 }
@@ -226,6 +271,9 @@ summary:focus-visible {
   align-items: center;
   color: #617653;
   font-size: 12px;
+}
+.browse-options[hidden] {
+  display: none;
 }
 .browse-options > select {
   background: transparent;
