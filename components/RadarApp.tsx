@@ -12,15 +12,20 @@ import { publishedTracking, itemStream } from "@/lib/tracking";
 import { readingExcerpt } from "@/lib/presentation";
 import {
   ArrowDownToLine,
+  ArrowDown,
   ArrowRight,
   ArrowUpRight,
   Bookmark,
+  Building2,
   CalendarDays,
   Check,
   ChevronDown,
   ChevronRight,
   CircleHelp,
+  CircuitBoard,
+  Clapperboard,
   Clock3,
+  Cpu,
   Database,
   ExternalLink,
   FileText,
@@ -52,8 +57,9 @@ import {
 
 type View = "creation" | "discover" | "trends" | "brief" | "saved" | "desk";
 const NAV = [
-  { id: "discover" as const, label: "AI 雷达热点实时追踪" },
-  { id: "creation" as const, label: "AIGC 创作热点话题" },
+  { id: "discover" as const, label: "AI 雷达", icon: Radio },
+  { id: "creation" as const, label: "AIGC 创作", icon: Clapperboard },
+  { id: "saved" as const, label: "我的收藏", icon: Bookmark },
 ];
 const LABELS: Record<View, string> = {
   discover: "AI 雷达热点实时追踪",
@@ -63,6 +69,15 @@ const LABELS: Record<View, string> = {
   saved: "我的收藏",
   desk: "采集工作台",
 };
+const DESCRIPTIONS: Record<View, string> = {
+  discover: "关注 AI 模型、硬件与人物企业动态。",
+  creation: "发现短剧、视频、代码动画与创作方法。",
+  saved: "保存在这个浏览器的作品、文章和阅读笔记。",
+  trends: "按独立发布方与发布时间，查看近期讨论。",
+  brief: "按日期回看收录的 AI 与 AIGC 线索。",
+  desk: "管理平台、关键词与采集记录。",
+};
+const NEWS_ICONS = [Cpu, CircuitBoard, Building2] as const;
 const MARK: Record<Platform, string> = {
   douyin: "♪",
   xiaohongshu: "红",
@@ -124,9 +139,19 @@ function today() {
   }).format(new Date());
 }
 
-export default function RadarApp({ initial }: { initial: Overview }) {
+export default function RadarApp({
+  initial,
+  initialView,
+}: {
+  initial: Overview;
+  initialView?: string | string[];
+}) {
   const [data, setData] = useState(initial);
-  const [view, setView] = useState<View>("discover");
+  const [view, setView] = useState<View>(() =>
+    typeof initialView === "string" && Object.hasOwn(LABELS, initialView)
+      ? (initialView as View)
+      : "discover",
+  );
   const [platform, setPlatform] = useState<
     Platform | "all" | "telegram" | "github"
   >("all");
@@ -153,6 +178,8 @@ export default function RadarApp({ initial }: { initial: Overview }) {
   const filterRef = useRef<HTMLDetailsElement>(null);
   const modalOpen = Boolean(detail || about || edit);
   const stream = view === "discover" ? "news" : "creation";
+  const showSidebar =
+    view === "discover" || (view === "creation" && platform !== "github");
   const tracking = useMemo(
     () => data.state.tracking || publishedTracking(),
     [data.state.tracking],
@@ -191,8 +218,6 @@ export default function RadarApp({ initial }: { initial: Overview }) {
         setGitHubBookmarks([...bookmarks.values()]);
       }
     } catch {}
-    const v = new URLSearchParams(location.search).get("view");
-    if (v && Object.hasOwn(LABELS, v)) setView(v as View);
   }, []);
   const refresh = useCallback(async () => {
     try {
@@ -302,8 +327,8 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       setCategory("all");
       setQ("");
       setScope("all");
-      setDays(next === "creation" ? "7" : "all");
-      setTab(next === "creation" ? "popular" : "latest");
+      setDays("all");
+      setTab("latest");
     }
     if (moreRef.current) moreRef.current.open = false;
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -517,8 +542,13 @@ export default function RadarApp({ initial }: { initial: Overview }) {
       <div className="app-main" inert={modalOpen}>
         <header className="site-header">
           <a className="simple-brand" href="/" aria-label="AI 创作雷达首页">
-            <Radio size={23} />
-            <span>AI 雷达</span>
+            <span className="brand-emblem">
+              <Radio size={23} aria-hidden="true" />
+            </span>
+            <span className="brand-wordmark">
+              <strong>YASUPO</strong>
+              <span>AI 创作雷达</span>
+            </span>
           </a>
           <nav className="simple-nav" aria-label="主要导航">
             {NAV.map((n) => (
@@ -528,18 +558,27 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 className={view === n.id ? "active" : ""}
                 aria-current={view === n.id ? "page" : undefined}
               >
+                <n.icon size={16} aria-hidden="true" />
                 {n.label}
+                {n.id === "saved" && savedCount > 0 && (
+                  <small>{savedCount}</small>
+                )}
               </button>
             ))}
-            <details className="more-menu" ref={moreRef}>
+            <details
+              className="more-menu"
+              data-active={
+                view === "brief" ||
+                view === "trends" ||
+                view === "desk" ||
+                undefined
+              }
+              ref={moreRef}
+            >
               <summary>
                 更多 <ChevronDown size={13} />
               </summary>
               <div>
-                <button onClick={() => navigate("saved")}>
-                  <Bookmark size={16} />
-                  我的收藏{savedCount > 0 ? ` · ${savedCount}` : ""}
-                </button>
                 <button onClick={() => navigate("brief")}>
                   <FileText size={16} />
                   AI / AIGC 日报
@@ -580,67 +619,82 @@ export default function RadarApp({ initial }: { initial: Overview }) {
             </details>
           </nav>
         </header>
-        <main id="radar-main" tabIndex={-1} className="main-wrap">
-          <section className="page-intro">
-            <div>
-              <h1>{LABELS[view]}</h1>
+        <main
+          id="radar-main"
+          tabIndex={-1}
+          className="main-wrap"
+          data-view={view}
+        >
+          <section
+            className={
+              showSidebar
+                ? "page-intro radar-cover"
+                : "page-intro page-intro-compact"
+            }
+          >
+            {view === "discover" && (
+              <div className="cover-rings" aria-hidden="true" />
+            )}
+            <div className="intro-copy">
+              {showSidebar && (
+                <div className="cover-status">
+                  <span>
+                    {data.storage === "snapshot" ? "资料快照" : "资料库"}
+                  </span>
+                  {data.state.updatedAt && (
+                    <time dateTime={data.state.updatedAt}>
+                      更新于 {time(data.state.updatedAt, true)}
+                    </time>
+                  )}
+                </div>
+              )}
+              <h1>
+                {showSidebar ? (
+                  view === "discover" ? (
+                    <>
+                      AI 雷达 <span>热点实时追踪</span>
+                    </>
+                  ) : (
+                    <>
+                      AIGC 创作 <span>热点话题</span>
+                    </>
+                  )
+                ) : view === "creation" && platform === "github" ? (
+                  "GitHub 资料"
+                ) : (
+                  LABELS[view]
+                )}
+              </h1>
               <p>
-                {view === "discover"
-                  ? "从 X 与 Telegram，关注 AI 模型、硬件与人物企业的新动向。"
-                  : view === "creation"
-                    ? "聚焦一线创作话题，直接看作品、原文与制作方法。"
-                    : view === "saved"
-                      ? "收藏保存在当前浏览器。"
-                      : view === "trends"
-                        ? "有来源的独立讨论，汇成事件线索。"
-                        : view === "brief"
-                          ? "按日期回看当天的创作线索。"
-                          : "管理平台、关键词与采集记录。"}
+                {view === "creation" && platform === "github"
+                  ? "收录仓库、文章与站内阅读笔记。"
+                  : DESCRIPTIONS[view]}
               </p>
+              {showSidebar && (
+                <a className="cover-cta" href="#radar-browse">
+                  {view === "discover" ? "浏览资讯" : "浏览创作资料"}{" "}
+                  <ArrowDown size={16} aria-hidden="true" />
+                </a>
+              )}
             </div>
           </section>
           {(view === "discover" || view === "creation" || view === "saved") && (
-            <>
-              {view !== "saved" && platform !== "github" && (
-                <TrackingBoard
-                  stream={stream}
-                  config={tracking}
-                  platform={platform}
-                  query={q}
-                  writable={data.writable}
-                  busy={busy}
-                  monitor={data.newsMonitor}
-                  onSave={async (config) => {
-                    const r = await action("/api/tracking", config);
-                    if (r) setToast("关注配置已保存");
-                    return Boolean(r);
-                  }}
-                  onImport={async () => {
-                    const r = await action("/api/following");
-                    if (r) setToast(`已导入 Following ${r.count} 人`);
-                  }}
-                  onCollect={async (watch, stop) => {
-                    const r = await action("/api/news-collect", {
-                      watch,
-                      stop,
-                    });
-                    if (r)
-                      setToast(
-                        stop
-                          ? "已请求停止本机追踪"
-                          : watch
-                            ? "已开启5分钟检查"
-                            : "正在读取最新公开发文",
-                      );
-                  }}
-                  onTopic={(query, topicPlatform) => {
-                    if (topicPlatform) setPlatform(topicPlatform);
-                    setQ(query);
-                    setCategory("all");
-                  }}
-                />
-              )}
-              <section className="browse-controls" aria-label="查找资料">
+            <div className={`reading-layout${showSidebar ? " has-rail" : ""}`}>
+              <section
+                id="radar-browse"
+                className="browse-controls"
+                aria-label="查找资料"
+                tabIndex={-1}
+              >
+                <h2 className="browse-heading">
+                  {view === "discover"
+                    ? "资讯列表"
+                    : platform === "github"
+                      ? "GitHub 收藏"
+                      : view === "saved"
+                        ? "收藏列表"
+                        : "创作资料"}
+                </h2>
                 <label className="search-box">
                   <Search size={20} />
                   <input
@@ -711,241 +765,314 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   )}
                 </div>
               </section>
-              {platform === "github" && (
-                <GitHubBookmarkForm
-                  onSave={(bookmark, hasTitle) => {
-                    const existing = githubBookmarks.find(
-                      (saved) => saved.url === bookmark.url,
-                    );
-                    setQ("");
-                    saveGitHubBookmarks(
-                      [
-                        {
-                          ...existing,
-                          ...bookmark,
-                          title:
-                            !hasTitle && existing
-                              ? existing.title
-                              : bookmark.title,
-                        },
-                        ...githubBookmarks.filter(
-                          (saved) => saved.url !== bookmark.url,
-                        ),
-                      ],
-                      existing ? "已更新本机收藏" : "已加入本机收藏",
-                    );
-                  }}
-                />
+              {showSidebar && platform !== "github" && (
+                <aside
+                  className="radar-sidebar"
+                  aria-label={
+                    view === "discover" ? "资讯分类与追踪" : "平台话题"
+                  }
+                >
+                  {view === "discover" && (
+                    <section className="rail-panel">
+                      <h2>按主题浏览</h2>
+                      <div className="news-topics">
+                        {NEWS_CATEGORIES.map((name, index) => {
+                          const Icon = NEWS_ICONS[index];
+                          const count = visible.filter(
+                            (item) =>
+                              itemStream(item) === "news" &&
+                              item.category === name,
+                          ).length;
+                          return (
+                            <button
+                              key={name}
+                              aria-pressed={category === name}
+                              onClick={() =>
+                                setCategory(category === name ? "all" : name)
+                              }
+                            >
+                              <span className="topic-icon">
+                                <Icon size={17} aria-hidden="true" />
+                              </span>
+                              <span>{name}</span>
+                              <small>{count}</small>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  )}
+                  <section className="rail-panel">
+                    <h2>{view === "discover" ? "追踪状态" : "平台话题"}</h2>
+                    <TrackingBoard
+                      stream={stream}
+                      config={tracking}
+                      platform={platform}
+                      query={q}
+                      writable={data.writable}
+                      busy={busy}
+                      monitor={data.newsMonitor}
+                      onSave={async (config) => {
+                        const r = await action("/api/tracking", config);
+                        if (r) setToast("关注配置已保存");
+                        return Boolean(r);
+                      }}
+                      onImport={async () => {
+                        const r = await action("/api/following");
+                        if (r) setToast(`已导入 Following ${r.count} 人`);
+                      }}
+                      onCollect={async (watch, stop) => {
+                        const r = await action("/api/news-collect", {
+                          watch,
+                          stop,
+                        });
+                        if (r)
+                          setToast(
+                            stop
+                              ? "已请求停止本机追踪"
+                              : watch
+                                ? "已开启5分钟检查"
+                                : "正在读取最新公开发文",
+                          );
+                      }}
+                      onTopic={(query, topicPlatform) => {
+                        if (topicPlatform) setPlatform(topicPlatform);
+                        setQ(query);
+                        setCategory("all");
+                      }}
+                    />
+                  </section>
+                </aside>
               )}
-              <section className="feed-column" aria-label="资料列表">
-                <div className="browse-toolbar">
-                  <span
-                    className="result-count"
-                    role="status"
-                    aria-live="polite"
-                  >
-                    {filtered.length + githubResults.length} 条资料
-                  </span>
-                  <div
-                    className="browse-options"
-                    hidden={platform === "github"}
-                  >
-                    <select
-                      value={tab}
-                      onChange={(e) => setTab(e.target.value)}
-                      aria-label="排序方式"
-                    >
-                      <option value="selected">推荐排序</option>
-                      {view === "creation" && (
-                        <option value="popular">平台点赞</option>
-                      )}
-                      <option value="latest">最新发布</option>
-                    </select>
-                    <details className="filter-menu" ref={filterRef}>
-                      <summary>
-                        <ListFilter size={15} />
-                        筛选
-                        {(category !== "all" ||
-                          days !== "all" ||
-                          scope !== "all") && <i aria-label="已启用筛选" />}
-                      </summary>
-                      <div className="filter-panel">
-                        <label>
-                          内容类别
-                          <select
-                            value={category}
-                            onChange={(e) =>
-                              setCategory(e.target.value as Category | "all")
-                            }
-                            aria-label="内容类别"
-                          >
-                            <option value="all">全部类别</option>
-                            {(view === "discover"
-                              ? NEWS_CATEGORIES
-                              : view === "creation"
-                                ? CREATION_CATEGORIES
-                                : CATEGORIES
-                            ).map((c) => (
-                              <option key={c} value={c}>
-                                {c}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label>
-                          发布时间
-                          <select
-                            value={days}
-                            onChange={(e) => setDays(e.target.value)}
-                            aria-label="时间范围"
-                          >
-                            <option value="all">全部时间</option>
-                            <option value="1">近 24 小时</option>
-                            <option value="7">近 7 天</option>
-                            <option value="30">近 30 天</option>
-                          </select>
-                        </label>
-                        <label>
-                          资料范围
-                          <select
-                            value={scope}
-                            onChange={(e) => setScope(e.target.value)}
-                            aria-label="资料范围"
-                          >
-                            <option value="all">所有已收录</option>
-                            <option value="selected">新采集动态</option>
-                            <option value="archive">历史归档</option>
-                          </select>
-                        </label>
-                        <button
-                          className="filter-done"
-                          onClick={() => {
-                            if (filterRef.current)
-                              filterRef.current.open = false;
-                            filterRef.current
-                              ?.querySelector("summary")
-                              ?.focus();
-                          }}
-                        >
-                          完成筛选 <Check size={14} />
-                        </button>
-                      </div>
-                    </details>
-                  </div>
-                </div>
-                {hasFilters && platform !== "github" && (
-                  <div className="active-filters">
-                    <span>
-                      {platform !== "all"
-                        ? ` · ${platform === "telegram" ? "Telegram" : PLATFORM_LABELS[platform]}`
-                        : ""}
-                      {category !== "all" ? ` · ${category}` : ""}
-                      {q.trim() ? ` · “${q.trim()}”` : ""}
-                      {days !== "all" ? ` · 近 ${days} 天` : ""}
-                      {scope !== "all"
-                        ? ` · ${scope === "archive" ? "历史归档" : "新采集动态"}`
-                        : ""}
-                    </span>
-                    <button onClick={resetFilters}>
-                      清除筛选 <CloseIcon size={13} />
-                    </button>
-                  </div>
+              <div className="reading-results">
+                {platform === "github" && (
+                  <GitHubBookmarkForm
+                    onSave={(bookmark, hasTitle) => {
+                      const existing = githubBookmarks.find(
+                        (saved) => saved.url === bookmark.url,
+                      );
+                      setQ("");
+                      saveGitHubBookmarks(
+                        [
+                          {
+                            ...existing,
+                            ...bookmark,
+                            title:
+                              !hasTitle && existing
+                                ? existing.title
+                                : bookmark.title,
+                          },
+                          ...githubBookmarks.filter(
+                            (saved) => saved.url !== bookmark.url,
+                          ),
+                        ],
+                        existing ? "已更新本机收藏" : "已加入本机收藏",
+                      );
+                    }}
+                  />
                 )}
-                <div className="feed-list">
-                  {filtered.length || githubResults.length ? (
-                    <>
-                      {githubResults.map((bookmark) => (
-                        <GitHubBookmarkCard
-                          key={bookmark.url}
-                          bookmark={bookmark}
-                          onRemove={() =>
-                            saveGitHubBookmarks(
-                              githubBookmarks.filter(
-                                (saved) => saved.url !== bookmark.url,
-                              ),
-                              "已取消收藏",
-                            )
-                          }
-                        />
-                      ))}
-                      {filtered.map(card)}
-                    </>
-                  ) : platform === "github" ? (
-                    <div className="empty-state">
-                      <h3>
-                        {q.trim()
-                          ? "没有匹配的 GitHub 收藏"
-                          : "收藏 GitHub 仓库和文章"}
-                      </h3>
-                      <p>
-                        {q.trim()
-                          ? "试试其他标题或仓库名。"
-                          : "粘贴链接后，即可在这里和「我的收藏」打开。"}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="empty-state">
-                      <div>
-                        <Search size={27} />
-                      </div>
-                      <h3>
-                        {view === "saved" && !hasFilters
-                          ? "这里等着你的第一条灵感"
-                          : platform === "telegram"
-                            ? "Telegram 入口已预留"
-                            : view === "discover" && !hasFilters
-                              ? "还没有采集到新闻"
-                              : "暂时没有符合条件的资料"}
-                      </h3>
-                      <p>
-                        {view === "saved" && !hasFilters
-                          ? "点击卡片书签，即可保存在当前浏览器。"
-                          : platform === "telegram"
-                            ? "频道与读取方式尚未配置，暂不展示消息。"
-                            : view === "discover" && !hasFilters
-                              ? "导入Following名单后，检查最新公开发文；已有创作资料在AIGC栏目。"
-                              : hasFilters
-                                ? "试试其他关键词、平台或时间范围。"
-                                : "暂无资料，采集后即可在这里浏览。"}
-                      </p>
-                      <button
-                        className="secondary-button"
-                        onClick={() => {
-                          if (hasFilters) resetFilters();
-                          else if (view === "saved") navigate("creation");
-                          else if (view === "discover") navigate("creation");
-                          else {
-                            setQ("");
-                            setPlatform("all");
-                            setCategory("all");
-                            setDays("all");
-                            setScope("all");
-                            navigate("desk");
-                          }
-                        }}
+                <section className="feed-column" aria-label="资料列表">
+                  <div className="browse-toolbar">
+                    <span
+                      className="result-count"
+                      role="status"
+                      aria-live="polite"
+                    >
+                      {filtered.length + githubResults.length} 条资料
+                    </span>
+                    <div
+                      className="browse-options"
+                      hidden={platform === "github"}
+                    >
+                      <select
+                        value={tab}
+                        onChange={(e) => setTab(e.target.value)}
+                        aria-label="排序方式"
                       >
-                        {hasFilters
-                          ? "清除筛选"
-                          : view === "saved"
-                            ? "去看创作话题"
-                            : view === "discover"
-                              ? "查看AIGC创作话题"
-                              : "查看采集工作台"}
-                        <ArrowRight size={14} />
+                        <option value="selected">推荐排序</option>
+                        {view === "creation" && (
+                          <option value="popular">平台点赞</option>
+                        )}
+                        <option value="latest">最新发布</option>
+                      </select>
+                      <details className="filter-menu" ref={filterRef}>
+                        <summary>
+                          <ListFilter size={15} />
+                          筛选
+                          {(category !== "all" ||
+                            days !== "all" ||
+                            scope !== "all") && <i aria-label="已启用筛选" />}
+                        </summary>
+                        <div className="filter-panel">
+                          <label>
+                            内容类别
+                            <select
+                              value={category}
+                              onChange={(e) =>
+                                setCategory(e.target.value as Category | "all")
+                              }
+                              aria-label="内容类别"
+                            >
+                              <option value="all">全部类别</option>
+                              {(view === "discover"
+                                ? NEWS_CATEGORIES
+                                : view === "creation"
+                                  ? CREATION_CATEGORIES
+                                  : CATEGORIES
+                              ).map((c) => (
+                                <option key={c} value={c}>
+                                  {c}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <label>
+                            发布时间
+                            <select
+                              value={days}
+                              onChange={(e) => setDays(e.target.value)}
+                              aria-label="时间范围"
+                            >
+                              <option value="all">全部时间</option>
+                              <option value="1">近 24 小时</option>
+                              <option value="7">近 7 天</option>
+                              <option value="30">近 30 天</option>
+                            </select>
+                          </label>
+                          <label>
+                            资料范围
+                            <select
+                              value={scope}
+                              onChange={(e) => setScope(e.target.value)}
+                              aria-label="资料范围"
+                            >
+                              <option value="all">所有已收录</option>
+                              <option value="selected">新采集动态</option>
+                              <option value="archive">历史归档</option>
+                            </select>
+                          </label>
+                          <button
+                            className="filter-done"
+                            onClick={() => {
+                              if (filterRef.current)
+                                filterRef.current.open = false;
+                              filterRef.current
+                                ?.querySelector("summary")
+                                ?.focus();
+                            }}
+                          >
+                            完成筛选 <Check size={14} />
+                          </button>
+                        </div>
+                      </details>
+                    </div>
+                  </div>
+                  {hasFilters && platform !== "github" && (
+                    <div className="active-filters">
+                      <span>
+                        {platform !== "all"
+                          ? ` · ${platform === "telegram" ? "Telegram" : PLATFORM_LABELS[platform]}`
+                          : ""}
+                        {category !== "all" ? ` · ${category}` : ""}
+                        {q.trim() ? ` · “${q.trim()}”` : ""}
+                        {days !== "all" ? ` · 近 ${days} 天` : ""}
+                        {scope !== "all"
+                          ? ` · ${scope === "archive" ? "历史归档" : "新采集动态"}`
+                          : ""}
+                      </span>
+                      <button onClick={resetFilters}>
+                        清除筛选 <CloseIcon size={13} />
                       </button>
                     </div>
                   )}
-                </div>
-                {platform !== "github" && (
-                  <p className="data-note">
-                    {data.storage === "snapshot" ? "资料快照" : "资料库"} ·{" "}
-                    {data.state.updatedAt
-                      ? `更新于 ${time(data.state.updatedAt, true)}`
-                      : "尚未采集"}
-                  </p>
-                )}
-              </section>
-            </>
+                  <div className="feed-list">
+                    {filtered.length || githubResults.length ? (
+                      <>
+                        {githubResults.map((bookmark) => (
+                          <GitHubBookmarkCard
+                            key={bookmark.url}
+                            bookmark={bookmark}
+                            onRemove={() =>
+                              saveGitHubBookmarks(
+                                githubBookmarks.filter(
+                                  (saved) => saved.url !== bookmark.url,
+                                ),
+                                "已取消收藏",
+                              )
+                            }
+                          />
+                        ))}
+                        {filtered.map(card)}
+                      </>
+                    ) : platform === "github" ? (
+                      <div className="empty-state">
+                        <h3>
+                          {q.trim()
+                            ? "没有匹配的 GitHub 收藏"
+                            : "收藏 GitHub 仓库和文章"}
+                        </h3>
+                        <p>
+                          {q.trim()
+                            ? "试试其他标题或仓库名。"
+                            : "粘贴链接后，即可在这里和「我的收藏」打开。"}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="empty-state">
+                        <div>
+                          <Search size={27} />
+                        </div>
+                        <h3>
+                          {view === "saved" && !hasFilters
+                            ? "这里等着你的第一条灵感"
+                            : platform === "telegram"
+                              ? "Telegram 入口已预留"
+                              : view === "discover" && !hasFilters
+                                ? "还没有采集到新闻"
+                                : "暂时没有符合条件的资料"}
+                        </h3>
+                        <p>
+                          {view === "saved" && !hasFilters
+                            ? "点击卡片书签，即可保存在当前浏览器。"
+                            : platform === "telegram"
+                              ? "频道与读取方式尚未配置，暂不展示消息。"
+                              : view === "discover" && !hasFilters
+                                ? "导入Following名单后，检查最新公开发文；已有创作资料在AIGC栏目。"
+                                : hasFilters
+                                  ? "试试其他关键词、平台或时间范围。"
+                                  : "暂无资料，采集后即可在这里浏览。"}
+                        </p>
+                        <button
+                          className="secondary-button"
+                          onClick={() => {
+                            if (hasFilters) resetFilters();
+                            else if (view === "saved") navigate("creation");
+                            else if (view === "discover") navigate("creation");
+                            else {
+                              setQ("");
+                              setPlatform("all");
+                              setCategory("all");
+                              setDays("all");
+                              setScope("all");
+                              navigate("desk");
+                            }
+                          }}
+                        >
+                          {hasFilters
+                            ? "清除筛选"
+                            : view === "saved"
+                              ? "去看创作话题"
+                              : view === "discover"
+                                ? "查看AIGC创作话题"
+                                : "查看采集工作台"}
+                          <ArrowRight size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              </div>
+            </div>
           )}
           {view === "trends" && (
             <div className="trends-layout">
@@ -1006,8 +1133,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                 )}
               </section>
               <aside className="method-card">
-                <span className="eyebrow">BEHIND THE SIGNAL</span>
-                <h3>热度，有据可循。</h3>
+                <h3>热度怎么算</h3>
                 <p>同一事件，每个独立发布方只计一次；证据越新，权重越高。</p>
                 <div className="heat-formula">
                   H = Σ 0.5<sup>经过小时 / 24</sup>
@@ -1040,7 +1166,6 @@ export default function RadarApp({ initial }: { initial: Overview }) {
           {view === "brief" && (
             <section className="daily-page">
               <div className="daily-top">
-                <span className="eyebrow">A LITTLE CLARITY, EVERY DAY</span>
                 <label>
                   <CalendarDays size={16} />
                   <input
@@ -1133,8 +1258,7 @@ export default function RadarApp({ initial }: { initial: Overview }) {
             <div className="desk-page">
               <section className="desk-summary">
                 <div>
-                  <div className="eyebrow">COLLECTION WORKSPACE</div>
-                  <h2>从来源，到有用的线索。</h2>
+                  <h2>采集任务</h2>
                   <p>{data.coverage}</p>
                 </div>
                 <button
@@ -1168,7 +1292,6 @@ export default function RadarApp({ initial }: { initial: Overview }) {
                   { name: "今日线索", n: data.brief.total },
                 ].map((s, i) => (
                   <div key={s.name}>
-                    <span>0{i + 1}</span>
                     <strong>{s.n}</strong>
                     <p>{s.name}</p>
                     {i < 4 && <ChevronRight size={15} />}
@@ -1424,12 +1547,22 @@ export default function RadarApp({ initial }: { initial: Overview }) {
               <Radio size={13} />
               YASUPO <b>AI 创作雷达</b>
             </span>
-            <span>
-              保持来源，保持好奇。
-              <i />
-              {data.storage === "snapshot" ? "SNAPSHOT" : "LOCAL FIRST"} /{" "}
-              {new Date().getFullYear()}
-            </span>
+            {showSidebar && (
+              <span>
+                <a
+                  href={
+                    view === "discover"
+                      ? "https://unsplash.com/photos/a-radio-tower-with-a-red-light-on-top-of-it-_AG2PRo836c"
+                      : "https://unsplash.com/photos/a-close-up-of-a-camera-in-the-dark-3Tf_b4BvEKc"
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  封面摄影 ·{" "}
+                  {view === "discover" ? "Roman Ilyuhin" : "Levi Stute"}
+                </a>
+              </span>
+            )}
           </footer>
         </main>
       </div>

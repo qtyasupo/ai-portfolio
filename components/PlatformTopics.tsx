@@ -71,8 +71,8 @@ export default function PlatformTopics({
                   ? scoped
                       .flatMap((t) => t.basis?.samples || [])
                       .every((s) => !s.dateVerified)
-                    ? "高互动线索；原发布日期待核验，不认定近期热榜"
-                    : "近期作品样本提炼 · 非官方AI分区榜单"
+                    ? "高互动样本 · 原发布日期待核验"
+                    : "近期作品样本"
                   : "候选词，等待验证"}
               </p>
             </section>
